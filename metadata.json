@@ -1,0 +1,8 @@
+{
+  "name": "AI Citation Reverse Engineering - Aug 18 - New",
+  "description": "Trace how AI search systems move from a user prompt to searches, sources, citations and brand recommendations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
