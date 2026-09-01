@@ -81,23 +81,23 @@ export const PlatformSettingsModal: React.FC<PlatformSettingsModalProps> = ({
 
         <div className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
           <div className="p-3 bg-sky-50 rounded-lg border border-sky-200 text-xs text-sky-900 leading-relaxed">
-            <strong>Server-side security:</strong> API credentials are stored only in Gemini Proxy 2 environment variables. This application never stores or transmits API keys from your browser.
+            <strong>Server-side security:</strong> API credentials are stored in this Vercel project's Environment Variables. The browser never receives the keys.
           </div>
 
           {/* Gemini Status */}
           <div className="p-4 rounded-lg border border-slate-200 bg-white space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span className={`w-2.5 h-2.5 rounded-full ${status?.gemini?.available ? 'bg-emerald-500' : 'bg-amber-400'}`}></span>
                 <span className="font-semibold text-slate-900 text-sm">Google Gemini API</span>
                 <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Native Google Search Grounding</span>
               </div>
-              <span className="text-xs text-emerald-700 font-medium bg-emerald-50 px-2 py-1 rounded border border-emerald-200">
-                Connected via AI Studio
+              <span className={`text-xs font-medium px-2 py-1 rounded border ${status?.gemini?.available ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-amber-700 bg-amber-50 border-amber-200'}`}>
+                {status?.gemini?.available ? 'Configured' : 'Key required in Vercel'}
               </span>
             </div>
             <p className="text-xs text-slate-600">
-              Primary model: <code className="text-slate-800 font-mono">gemini-3.6-flash</code>. Supported by exponential-backoff retry handling.
+              Primary model: <code className="text-slate-800 font-mono">gemini-2.5-flash</code>. Set <code className="font-mono">GEMINI_API_KEY</code> in Vercel.
             </p>
             <div className="hidden">
               <label className="text-xs text-slate-500 block mb-1">Custom Gemini API Key (Optional override):</label>

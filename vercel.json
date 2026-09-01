@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "api/ai-citation-reverse-engineering.js": { "maxDuration": 60 }
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

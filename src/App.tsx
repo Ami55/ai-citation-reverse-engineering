@@ -91,6 +91,14 @@ export default function App() {
     }));
   };
 
+  const handleRemoveFailedRuns = () => {
+    setProject((prev) => ({
+      ...prev,
+      runs: (prev.runs || []).filter((run) => run.status !== 'failed'),
+      updatedAt: new Date().toISOString(),
+    }));
+  };
+
   const handleUpdateExperiments = (experiments: RecommendedExperimentItem[]) => {
     setProject((prev) => ({
       ...prev,
@@ -219,6 +227,7 @@ export default function App() {
           <LiveTestRunsView
             project={project}
             onAddRuns={handleAddRuns}
+            onRemoveFailedRuns={handleRemoveFailedRuns}
             onOpenSettings={() => setIsSettingsOpen(true)}
           />
         )}

@@ -24,12 +24,14 @@ import {
 interface LiveTestRunsViewProps {
   project: ProjectState;
   onAddRuns: (runs: TestRunItem[]) => void;
+  onRemoveFailedRuns: () => void;
   onOpenSettings: () => void;
 }
 
 export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
   project,
   onAddRuns,
+  onRemoveFailedRuns,
   onOpenSettings,
 }) => {
   const [selectedPromptId, setSelectedPromptId] = useState<string>(
@@ -45,6 +47,7 @@ export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
   const [expandedRunId, setExpandedRunId] = useState<string | null>(null);
 
   const runs = project.runs || [];
+  const failedRunCount = runs.filter((run) => run.status === 'failed').length;
 
   const handleTogglePlatform = (p: PlatformType) => {
     if (selectedPlatforms.includes(p)) {
@@ -87,7 +90,13 @@ export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
             }),
           });
 
-          const data = await res.json();
+          const responseText = await res.text();
+          let data: any;
+          try {
+            data = responseText ? JSON.parse(responseText) : {};
+          } catch {
+            data = { error: `The API route returned ${res.status} instead of JSON. Confirm that the Vercel API function was deployed.` };
+          }
 
           if (res.ok && data.status === 'success') {
             const runItem: TestRunItem = {
@@ -159,10 +168,10 @@ export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
             citedSources: [],
             mentionedBrands: [],
             answerText: '',
-            errorDetails: err.message || 'Network / server communication error',
+              errorDetails: `${err.message || 'Network / server communication error'}. Confirm that /api/ai-citation-reverse-engineering is deployed and not protected by Vercel Authentication.`,
           };
           newRuns.push(failItem);
-          setExecutionLog((prev) => [...prev, `✗ Network Error on ${platform}: ${err.message}`]);
+          setExecutionLog((prev) => [...prev, `✗ ${platform.toUpperCase()} could not reach the app API route: ${err.message}`]);
         }
       }
     }
@@ -298,11 +307,16 @@ export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
 
       {/* History of Live Test Runs */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
-        <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 gap-4">
           <div>
             <h3 className="text-sm font-bold text-slate-900">Recorded Live Test Runs ({runs.length})</h3>
-            <p className="text-[11px] text-slate-500">Auditable log of model queries, cited segments, and raw API responses.</p>
+            <p className="text-[11px] text-slate-500">Historical log. Old failures remain here until removed and do not mean the current API connection is failing.</p>
           </div>
+          {failedRunCount > 0 && (
+            <button onClick={onRemoveFailedRuns} className="shrink-0 px-3 py-1.5 text-xs font-semibold text-rose-700 bg-white hover:bg-rose-50 border border-rose-200 rounded-lg">
+              Remove {failedRunCount} failed {failedRunCount === 1 ? 'run' : 'runs'}
+            </button>
+          )}
         </div>
 
         <div className="divide-y divide-slate-200">
@@ -355,6 +369,7 @@ export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
                           Failed
                         </span>
                       )}
+                      {run.status === 'failed' && <span className="text-[10px] text-slate-400">Historical record</span>}
                     </div>
 
                     <div className="flex items-center gap-3 text-xs text-slate-500">

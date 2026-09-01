@@ -1,2 +1,2 @@
 export const AI_CITATION_PROXY_URL =
-  'https://gemini-proxy-2.vercel.app/api/ai-citation-reverse-engineering';
+  import.meta.env.VITE_AI_CITATION_PROXY_URL || '/api/ai-citation-reverse-engineering';
