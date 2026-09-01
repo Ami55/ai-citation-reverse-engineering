@@ -84,6 +84,10 @@ export const ProjectManagerModal: React.FC<ProjectManagerModalProps> = ({
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 text-xs">
+          <div className="rounded-lg border border-sky-200 bg-sky-50 p-4 text-sky-950 leading-relaxed">
+            <strong className="block mb-1">What this research will answer</strong>
+            For a defined traveller question, the app tests whether AI systems retrieve your pages, cite them, mention your brand, or prefer a competitor. Add the real domain and the pages you may improve. Saving takes you directly to Step 1 to build the repeatable test prompts.
+          </div>
           <div>
             <label className="font-semibold text-slate-700 block mb-1">Project Name</label>
             <input
@@ -204,7 +208,7 @@ export const ProjectManagerModal: React.FC<ProjectManagerModalProps> = ({
               type="submit"
               className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg text-xs shadow-xs transition-colors"
             >
-              Save Project Changes
+              Save & Choose Test Prompts
             </button>
           </div>
         </form>

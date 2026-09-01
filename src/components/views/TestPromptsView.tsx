@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PromptItem, ProjectState, PlatformType } from '../../types';
+import { ResearchStepGuide } from '../ResearchStepGuide';
 import {
   Plus,
   Copy,
@@ -190,6 +191,18 @@ export const TestPromptsView: React.FC<TestPromptsViewProps> = ({
 
   return (
     <div className="space-y-6">
+      <ResearchStepGuide
+        step="Step 1"
+        title="Choose the questions you will test repeatedly"
+        purpose="Create a small, stable prompt set that represents real traveller research and booking decisions. These same prompts become your before-and-after measurement set."
+        inputs={[`Seed topic: ${project.seedPrompt || 'add one in project settings'}`, `Audience: ${project.audience || 'define the traveller group'}`, `Market: ${project.country || 'country'} / ${project.language || 'language'}`]}
+        actions={['Keep the seed prompt.', 'Add variations for comparison, trust, logistics, and booking intent.', 'Use specific natural-language questions a traveller would genuinely ask.', 'Keep the prompt wording unchanged after the baseline test.']}
+        output="A repeatable prompt set, grouped by intent."
+        interpretation="Prompts are measurement instruments—not keywords to place on a page. Each should test a distinct customer decision."
+        doneWhen="you have 5–10 useful prompts covering the important decision journey."
+        nextLabel="Continue to Run Tests"
+        onNext={() => onExecutePrompt(project.prompts[0]?.id || '')}
+      />
       {/* Header Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
         <div>

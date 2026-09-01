@@ -97,7 +97,7 @@ export const PlatformSettingsModal: React.FC<PlatformSettingsModalProps> = ({
               </span>
             </div>
             <p className="text-xs text-slate-600">
-              Primary model: <code className="text-slate-800 font-mono">gemini-2.5-flash</code>. Set <code className="font-mono">GEMINI_API_KEY</code> in Vercel.
+              Primary model: <code className="text-slate-800 font-mono">gemini-3.6-flash</code>. Set <code className="font-mono">GEMINI_API_KEY</code> in Vercel.
             </p>
             <div className="hidden">
               <label className="text-xs text-slate-500 block mb-1">Custom Gemini API Key (Optional override):</label>

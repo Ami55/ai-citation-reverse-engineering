@@ -83,12 +83,47 @@ export default function App() {
   };
 
   const handleAddRuns = (newRuns: TestRunItem[]) => {
-    setProject((prev) => ({
-      ...prev,
-      runs: [...newRuns, ...(prev.runs || [])],
-      isDemo: false,
-      updatedAt: new Date().toISOString(),
-    }));
+    setProject((prev) => {
+      const generatedOpportunities: CitationOpportunityItem[] = newRuns
+        .filter((run) => run.status === 'success')
+        .flatMap((run) => {
+          const cleanTarget = prev.targetDomain.replace(/^www\./, '');
+          const targetRetrieved = run.retrievedSources.some((item) => item.domain.replace(/^www\./, '').includes(cleanTarget));
+          const targetCited = run.citedSources.some((item) => item.domain.replace(/^www\./, '').includes(cleanTarget));
+          if (targetCited) return [];
+          const competitor = run.citedSources.find((item) => prev.competitorDomains.some((domain) => item.domain.includes(domain.replace(/^www\./, '')))) || run.citedSources[0];
+          if (!competitor) return [];
+          const funnelStage = targetRetrieved ? 'Stage 3: Target page retrieved but not cited' as const : 'Stage 2: Target page not retrieved' as const;
+          return [{
+            id: `opp-${run.id}`,
+            triggeringPrompt: run.promptText,
+            searchQuery: run.searchQueries[0] || run.promptText,
+            platform: run.platform,
+            citedCompetitor: competitor.domain,
+            competitorUrl: competitor.url,
+            supportedClaim: competitor.supportedClaims?.[0] || competitor.title || 'Competitor page supported the generated answer.',
+            citedEvidence: competitor.citedText || competitor.snippet || 'The competitor URL was cited in this observed run.',
+            closestTargetUrl: prev.relevantTargetUrls[0] || `https://${prev.targetDomain}`,
+            targetPageCoverage: targetRetrieved ? 'Target page was retrieved but not selected as a citation.' : 'Target page was not observed in retrieved sources.',
+            observedDifference: `${competitor.domain} was cited; ${prev.targetDomain} was ${targetRetrieved ? 'retrieved but not cited' : 'not retrieved'}.`,
+            likelyCitationBarrier: targetRetrieved ? 'The target page may lack a sufficiently direct, extractable answer or supporting evidence for this question.' : 'The target page may not align clearly enough with the query, or may lack retrievability and authority signals.',
+            recommendedExperiment: `On ${prev.relevantTargetUrls[0] || prev.targetDomain}, add a self-contained answer section for “${run.searchQueries[0] || run.promptText}” with specific facts, relevant entities, clear headings, and first-hand expertise. Keep the rest of the test conditions unchanged.`,
+            confidence: 'Medium' as const,
+            evidenceLabel: 'Likely Citation Factor' as const,
+            priority: 'High' as const,
+            humanReviewStatus: 'Pending Review' as const,
+            funnelStage,
+          }];
+        });
+      const opportunityMap = new Map([...(prev.opportunities || []), ...generatedOpportunities].map((item) => [`${item.platform}|${item.triggeringPrompt}|${item.competitorUrl}`, item]));
+      return {
+        ...prev,
+        runs: [...newRuns, ...(prev.runs || [])],
+        opportunities: Array.from(opportunityMap.values()),
+        isDemo: false,
+        updatedAt: new Date().toISOString(),
+      };
+    });
   };
 
   const handleRemoveFailedRuns = () => {
@@ -128,6 +163,7 @@ export default function App() {
     setSavedProjects((prev) =>
       prev.map((p) => (p.id === updated.id ? updated : p))
     );
+    setActiveTab('prompts');
   };
 
   const handleCreateNewProject = () => {

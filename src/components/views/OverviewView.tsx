@@ -77,6 +77,20 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
 
   return (
     <div className="space-y-6">
+      <section className="rounded-xl bg-gradient-to-r from-slate-950 to-indigo-950 p-6 text-white shadow-sm">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-sky-300">Manager-ready research brief</span>
+        <h2 className="text-xl font-bold mt-2">What problem does this app solve?</h2>
+        <p className="text-sm text-slate-200 mt-2 max-w-4xl leading-relaxed">
+          AI answers can recommend and cite competitor pages while ignoring ours, but ordinary rank tracking does not explain where we lost visibility. This app repeats real customer questions, records which pages AI retrieves and cites, identifies the stage where our domain drops out, and turns that evidence into a controlled website experiment.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5 text-xs">
+          <div className="rounded-lg border border-white/15 bg-white/5 p-4"><strong className="text-sky-300 block mb-1">Research question</strong>For which traveller questions does AI retrieve, cite, mention, or recommend {project.targetDomain || 'our domain'}?</div>
+          <div className="rounded-lg border border-white/15 bg-white/5 p-4"><strong className="text-amber-300 block mb-1">Decision it supports</strong>Which specific page change should we prioritise to improve citation eligibility?</div>
+          <div className="rounded-lg border border-white/15 bg-white/5 p-4"><strong className="text-emerald-300 block mb-1">Evidence of success</strong>The same prompts show higher repeated retrieval, citation, or recommendation after the change.</div>
+        </div>
+        <p className="text-[11px] text-slate-400 mt-4">Important: this is controlled observational research. It identifies testable patterns; it does not prove an AI ranking factor.</p>
+      </section>
+
       <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-5">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
           <div>

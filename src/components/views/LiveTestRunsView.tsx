@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ProjectState, TestRunItem, PlatformType } from '../../types';
 import { EvidenceBadge } from '../EvidenceBadge';
 import { AI_CITATION_PROXY_URL } from '../../config';
+import { ResearchStepGuide } from '../ResearchStepGuide';
 import {
   Play,
   CheckCircle2,
@@ -183,6 +184,16 @@ export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
 
   return (
     <div className="space-y-6">
+      <ResearchStepGuide
+        step="Step 2"
+        title="Run a baseline and capture what AI actually uses"
+        purpose="Send the same prompt to search-grounded AI platforms and record queries, retrieved pages, citations, and brand mentions."
+        inputs={[`${project.prompts.length} saved test prompts`, `Target domain: ${project.targetDomain}`, `${project.competitorDomains.length} competitor domains`, 'Server-side API keys for the selected platforms']}
+        actions={['Select one prompt.', 'Select only platforms whose API connection is configured.', 'Use 3–5 runs per platform for a stable baseline.', 'Run the suite, then confirm successful runs contain sources or an answer.']}
+        output="An auditable baseline showing which sources were retrieved, cited, and mentioned for each prompt."
+        interpretation="Retrieved but not cited means the page was considered but lost at synthesis. Not retrieved means content relevance, authority, accessibility, or query alignment may be the earlier problem."
+        doneWhen="the priority prompts have successful repeated runs and the pattern is not based on one isolated answer."
+      />
       {/* Execution Control Panel */}
       <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">

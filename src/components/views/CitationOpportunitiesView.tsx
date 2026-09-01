@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ProjectState, CitationOpportunityItem, RecommendedExperimentItem } from '../../types';
 import { EvidenceBadge } from '../EvidenceBadge';
+import { ResearchStepGuide } from '../ResearchStepGuide';
 import {
   Sparkles,
   ExternalLink,
@@ -71,6 +72,16 @@ export const CitationOpportunitiesView: React.FC<CitationOpportunitiesViewProps>
 
   return (
     <div className="space-y-6">
+      <ResearchStepGuide
+        step="Step 3"
+        title="Turn a citation gap into one controlled website change"
+        purpose="Find where your page lost—retrieval, citation, brand mention, or recommendation—then change the page for that specific reason."
+        inputs={[`${opportunities.length} diagnosed opportunities`, `${experiments.length} experiments tracked`, 'Observed competitor citations and your closest target URL']}
+        actions={['Start with High priority and High confidence.', 'Read the funnel stage and observed difference.', 'Open supporting reports only if you need to verify the evidence.', 'Approve one experiment and implement its proposed change on the named URL.', 'Record the baseline and do not combine unrelated changes in one test.']}
+        output="A page-level experiment with a proposed change, hypothesis, success metric, retest prompts, and retest date."
+        interpretation="The recommendation is a testable hypothesis, not proof of a ranking factor. Implement it because the observed cited page has a useful difference your page lacks."
+        doneWhen="the change is live, indexable, documented, and connected to the exact prompts used in the baseline."
+      />
       {/* Header Info */}
       <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
