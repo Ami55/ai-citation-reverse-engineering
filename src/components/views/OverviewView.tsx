@@ -50,6 +50,9 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
   const targetRetrievalFreq = targetBrandMetric ? targetBrandMetric.retrievalFrequency : 0;
   const targetCitationFreq = targetBrandMetric ? targetBrandMetric.citationFrequency : 0;
   const targetMentionFreq = targetBrandMetric ? targetBrandMetric.mentionFrequency : 0;
+  const highPriorityOpportunities = project.opportunities.filter((opp) => opp.priority === 'High');
+  const activeExperiments = project.experiments.filter((experiment) => experiment.status === 'Active Testing');
+  const leadingOpportunity = highPriorityOpportunities[0] || project.opportunities[0];
 
   // Funnel diagnosis summary counts
   const stageCounts: Record<string, number> = {
@@ -74,6 +77,44 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
 
   return (
     <div className="space-y-6">
+      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-5">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-sky-700">Start here</span>
+            <h2 className="text-2xl font-bold text-slate-900 mt-1">Improve your chances of being cited by AI</h2>
+            <p className="text-sm text-slate-600 mt-1 max-w-3xl">You do not need to read every report. Establish a baseline, fix the clearest citation gap, and retest the same prompts.</p>
+          </div>
+          <button onClick={() => onNavigateTab('citation-opportunities')} className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800">
+            Open recommended fixes <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          {[
+            { step: '1', title: 'Choose repeatable prompts', detail: `${promptsCount} prompts ready`, tab: 'prompts' },
+            { step: '2', title: 'Run a baseline test', detail: `${validRuns.length} successful runs`, tab: 'runs' },
+            { step: '3', title: 'Implement one page fix', detail: `${highPriorityOpportunities.length} high-priority gaps`, tab: 'citation-opportunities' },
+            { step: '4', title: 'Retest and compare', detail: `${activeExperiments.length} active experiments`, tab: 'changes-over-time' },
+          ].map((item) => (
+            <button key={item.step} onClick={() => onNavigateTab(item.tab)} className="text-left rounded-xl border border-slate-200 bg-slate-50 p-4 hover:border-sky-300 hover:bg-white transition-colors">
+              <div className="flex items-center justify-between"><span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-bold">{item.step}</span><ArrowRight className="w-4 h-4 text-slate-400" /></div>
+              <h3 className="font-bold text-sm text-slate-900 mt-3">{item.title}</h3>
+              <p className="text-xs text-slate-500 mt-1">{item.detail}</p>
+            </button>
+          ))}
+        </div>
+
+        <details className="rounded-lg border border-slate-200 bg-slate-50">
+          <summary className="cursor-pointer px-4 py-3 text-sm font-bold text-slate-800">When should I open the supporting reports?</summary>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 border-t border-slate-200 p-4 text-xs text-slate-600">
+            <p><strong className="text-slate-900">Search Pathways:</strong> diagnose whether the failure happened at query, retrieval, citation, or recommendation.</p>
+            <p><strong className="text-slate-900">Sources & Citations:</strong> identify the exact competitor URLs and claims that AI used.</p>
+            <p><strong className="text-slate-900">Competitor Comparison:</strong> compare page structure after choosing a citation gap to fix.</p>
+            <p><strong className="text-slate-900">Brand Visibility:</strong> monitor overall mentions; it is not a separate task list.</p>
+          </div>
+        </details>
+      </section>
+
       {/* Top Banner Notice */}
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -433,7 +474,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
               <EvidenceBadge label="Comparative Finding" size="sm" />
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Disappears on generic transactional queries ("is a Vatican tour worth it?") where AI search tools prioritize editorial cost/time breakdown tables published by tour operators over marketplace listings.
+              {leadingOpportunity ? `${leadingOpportunity.triggeringPrompt}: ${leadingOpportunity.likelyCitationBarrier}` : 'No confirmed disappearance pattern yet. Repeat the same prompts before drawing a conclusion.'}
             </p>
           </div>
 
@@ -444,7 +485,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
               <EvidenceBadge label="Cross-run Pattern" size="sm" />
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              <strong>Walks of Italy</strong> and <strong>LivItaly Tours</strong> dominate crowd-avoidance queries due to explicit time-slot tables (e.g. 7:30 AM early access) in their page headings.
+              {topCompetitors.length > 0 ? topCompetitors.map((competitor) => competitor.brandName).join(', ') : 'No repeatedly cited competitor has been established yet.'}
             </p>
           </div>
 
@@ -455,7 +496,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
               <EvidenceBadge label="Observed API Data" size="sm" />
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              AI engines consistently reformulate user prompts to include geographic and credential keywords (e.g. "licensed private tour guides Rome avoid crowds").
+              {allQueries.length > 0 ? `Observed query examples include: ${allQueries.slice(0, 3).join('; ')}.` : 'Search-query patterns will appear after successful live tests expose grounded queries.'}
             </p>
           </div>
 
@@ -466,7 +507,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
               <EvidenceBadge label="Unable to Determine" size="sm" />
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Unable to determine internal crawler index freshness cycles for client-rendered React bio modals versus server-rendered category headers.
+              Results can vary between platforms and runs. Treat a single-run finding as directional until the same pattern repeats.
             </p>
           </div>
 
@@ -477,7 +518,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
               <EvidenceBadge label="Likely Citation Factor" size="sm" />
             </div>
             <p className="text-xs text-indigo-900 leading-relaxed">
-              Test adding an explicit Direct Answer FAQ on the Rome category page with structured early-morning access tables and local guide archaeologist credentials.
+              {leadingOpportunity?.recommendedExperiment || 'Approve one high-priority opportunity, make one controlled page change, and rerun the same prompts.'}
             </p>
           </div>
         </div>
