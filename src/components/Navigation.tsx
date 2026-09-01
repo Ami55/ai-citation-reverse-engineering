@@ -44,11 +44,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   totalRuns,
 }) => {
   const workflowTabs: { id: ActiveTab; label: string; icon: React.ElementType; badge?: string | number }[] = [
-    { id: 'overview', label: 'Start Here', icon: LayoutDashboard },
-    { id: 'prompts', label: '1. Choose Tests', icon: FileQuestion, badge: totalPrompts },
-    { id: 'runs', label: '2. Run Tests', icon: PlayCircle, badge: totalRuns },
-    { id: 'citation-opportunities', label: '3. Fix Citation Gaps', icon: Sparkles },
-    { id: 'changes-over-time', label: '4. Measure Progress', icon: TrendingUp },
+    { id: 'overview', label: 'Research Workspace', icon: LayoutDashboard },
   ];
 
   const supportingTabs: { id: ActiveTab; label: string; purpose: string; icon: React.ElementType }[] = [
@@ -64,7 +60,6 @@ export const Navigation: React.FC<NavigationProps> = ({
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between gap-4 py-2">
           <div className="flex items-center gap-2 min-w-0 flex-1">
-          <span className="hidden xl:inline text-[10px] font-bold uppercase tracking-widest text-slate-400">Workflow</span>
           <nav className="flex items-center space-x-1 overflow-x-auto no-scrollbar py-1">
             {workflowTabs.map((tab) => {
               const Icon = tab.icon;

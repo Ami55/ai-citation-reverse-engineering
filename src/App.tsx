@@ -163,7 +163,8 @@ export default function App() {
     setSavedProjects((prev) =>
       prev.map((p) => (p.id === updated.id ? updated : p))
     );
-    setActiveTab('prompts');
+    setActiveTab('overview');
+    setTimeout(() => document.getElementById('workspace-step-1')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   };
 
   const handleCreateNewProject = () => {
@@ -218,6 +219,22 @@ export default function App() {
     }
   };
 
+  const navigateWorkspace = (tab: string) => {
+    const sectionMap: Record<string, string> = {
+      overview: 'workspace-top',
+      prompts: 'workspace-step-1',
+      runs: 'workspace-step-2',
+      'citation-opportunities': 'workspace-step-3',
+      'changes-over-time': 'workspace-step-4',
+    };
+    if (!sectionMap[tab]) {
+      setActiveTab(tab as ActiveTab);
+      return;
+    }
+    setActiveTab('overview');
+    setTimeout(() => document.getElementById(sectionMap[tab])?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased">
       {/* Top Diagnostic Disclaimer */}
@@ -243,13 +260,20 @@ export default function App() {
 
       {/* Active Tab View Body */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
-        {activeTab === 'overview' && (
-          <OverviewView
-            project={project}
-            onNavigateTab={setActiveTab}
-            onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
-          />
-        )}
+        {activeTab === 'overview' && <div className="space-y-12" id="workspace-top">
+          <section className="rounded-2xl border-2 border-indigo-200 bg-white p-6 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div><span className="text-[10px] font-bold uppercase tracking-widest text-indigo-700">First: research inputs</span><h1 className="text-2xl font-bold text-slate-900 mt-1">{project.name}</h1><p className="text-sm text-slate-600 mt-1">Question: “{project.seedPrompt || 'Add the customer question you want to investigate'}”</p></div>
+              <button onClick={() => setIsProjectManagerOpen(true)} className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-indigo-700">Enter or edit research inputs</button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5 text-xs"><div className="rounded-lg bg-slate-50 p-3"><strong className="block text-slate-900">Target website</strong>{project.targetDomain || 'Not entered'}</div><div className="rounded-lg bg-slate-50 p-3"><strong className="block text-slate-900">Audience and market</strong>{project.audience || 'Not entered'} · {project.country}/{project.language}</div><div className="rounded-lg bg-slate-50 p-3"><strong className="block text-slate-900">Pages and competitors</strong>{project.relevantTargetUrls.length} target URLs · {project.competitorDomains.length} competitors</div></div>
+          </section>
+          <OverviewView project={project} onNavigateTab={navigateWorkspace} onOpenHowItWorks={() => setIsHowItWorksOpen(true)} />
+          <section id="workspace-step-1" className="scroll-mt-24 border-t-4 border-sky-500 pt-8"><TestPromptsView project={project} onUpdatePrompts={handleUpdatePrompts} onExecutePrompt={() => navigateWorkspace('runs')} /></section>
+          <section id="workspace-step-2" className="scroll-mt-24 border-t-4 border-indigo-500 pt-8"><LiveTestRunsView project={project} onAddRuns={handleAddRuns} onRemoveFailedRuns={handleRemoveFailedRuns} onOpenSettings={() => setIsSettingsOpen(true)} /></section>
+          <section id="workspace-step-3" className="scroll-mt-24 border-t-4 border-amber-500 pt-8"><CitationOpportunitiesView project={project} onUpdateExperiments={handleUpdateExperiments} onUpdateOpportunities={handleUpdateOpportunities} /></section>
+          <section id="workspace-step-4" className="scroll-mt-24 border-t-4 border-emerald-500 pt-8"><ChangesOverTimeView project={project} /></section>
+        </div>}
 
         {activeTab === 'prompts' && (
           <TestPromptsView
