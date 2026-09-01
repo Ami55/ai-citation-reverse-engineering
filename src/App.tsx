@@ -126,13 +126,13 @@ export default function App() {
     const newId = `project-${Date.now()}`;
     const newProj: ProjectState = {
       id: newId,
-      name: 'New Citation Audit',
+      name: 'Untitled Research',
       seedPrompt: '',
-      subject: 'Commercial Search & Citation Research',
-      audience: 'Prospective Buyers & Research Travelers',
+      subject: '',
+      audience: '',
       country: 'CA',
       language: 'en',
-      targetDomain: 'example.com',
+      targetDomain: '',
       relevantTargetUrls: [],
       competitorDomains: [],
       selectedPlatforms: ['gemini'],
@@ -150,6 +150,7 @@ export default function App() {
     };
     setProject(newProj);
     setSavedProjects((prev) => [newProj, ...prev]);
+    setActiveTab('overview');
     setIsProjectManagerOpen(true);
   };
 
@@ -182,6 +183,7 @@ export default function App() {
       <Header
         project={project}
         onOpenProjectManager={() => setIsProjectManagerOpen(true)}
+        onCreateNewResearch={handleCreateNewProject}
         onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
       />
 

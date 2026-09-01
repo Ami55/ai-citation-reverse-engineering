@@ -82,7 +82,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
             <EvidenceBadge label="Observed API Data" size="sm" />
           </div>
           <p className="text-xs text-slate-600 mt-1">
-            Analyzing observable retrieval-to-citation pathways for private tours available through ToursByLocals across Gemini, OpenAI and Claude.
+            Analyzing observable retrieval-to-citation pathways for {project.targetDomain || 'the target domain'} across Gemini, OpenAI and Claude.
           </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -422,7 +422,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ project, onNavigateT
               <EvidenceBadge label="Observed API Data" size="sm" />
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Tours on ToursByLocals consistently appear when prompts explicitly inquire about bespoke custom itineraries, direct guide communication, or private walking pacing away from crowded bottlenecks.
+              The target domain appears most consistently for prompt patterns where the recorded test runs show retrieval, citation, or brand mentions. Review the pathway table for the supporting evidence.
             </p>
           </div>
 

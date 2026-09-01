@@ -32,13 +32,14 @@ export const SearchPathwaysView: React.FC<SearchPathwaysViewProps> = ({ project 
   }, [project.runs]);
 
   const filteredPathways = useMemo(() => {
+    const targetBrandSlug = project.targetDomain.replace(/^www\./, '').split('.')[0].toLowerCase();
     return pathways.filter((row) => {
       const matchPlatform = selectedPlatform === 'All' || row.platform === selectedPlatform;
       const matchPrompt = selectedPrompt === 'All' || row.prompt === selectedPrompt;
       const matchBrand =
         selectedBrandFilter === 'All' ||
-        (selectedBrandFilter === 'target' && (row.retrievedDomain.includes(project.targetDomain) || row.mentionedBrand.toLowerCase().includes('toursbylocals'))) ||
-        (selectedBrandFilter === 'competitors' && !row.retrievedDomain.includes(project.targetDomain) && !row.mentionedBrand.toLowerCase().includes('toursbylocals'));
+        (selectedBrandFilter === 'target' && (row.retrievedDomain.includes(project.targetDomain) || row.mentionedBrand.toLowerCase().includes(targetBrandSlug))) ||
+        (selectedBrandFilter === 'competitors' && !row.retrievedDomain.includes(project.targetDomain) && !row.mentionedBrand.toLowerCase().includes(targetBrandSlug));
       const matchCitation =
         citationStatusFilter === 'All' || row.citationStatus === citationStatusFilter;
       const matchSearch =
@@ -215,7 +216,8 @@ export const SearchPathwaysView: React.FC<SearchPathwaysViewProps> = ({ project 
                 </tr>
               ) : (
                 filteredPathways.map((row) => {
-                  const isTarget = row.retrievedDomain.includes(project.targetDomain) || row.mentionedBrand.toLowerCase().includes('toursbylocals');
+                  const targetBrandSlug = project.targetDomain.replace(/^www\./, '').split('.')[0].toLowerCase();
+                  const isTarget = row.retrievedDomain.includes(project.targetDomain) || row.mentionedBrand.toLowerCase().includes(targetBrandSlug);
                   return (
                     <tr
                       key={row.id}

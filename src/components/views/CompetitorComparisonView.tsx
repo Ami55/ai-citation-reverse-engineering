@@ -249,7 +249,7 @@ export const CompetitorComparisonView: React.FC<CompetitorComparisonViewProps> =
               </div>
 
               <p className="text-xs text-slate-600 leading-relaxed">
-                Do NOT copy competitor content. Instead, add unique first-hand value authored by local guides on ToursByLocals:
+                Do not copy competitor content. Add unique first-hand value from the target brand's own experts and contributors:
               </p>
 
               <div className="space-y-2 text-xs">

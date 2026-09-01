@@ -43,8 +43,9 @@ export function calculateBrandMetrics(
 
   // Initialize tracked brands
   const cleanTarget = targetDomain.replace(/^www\./, '').toLowerCase();
+  const targetBrandLabel = cleanTarget.split('.')[0] || 'Target Brand';
   brandMap.set(cleanTarget, {
-    brandName: 'ToursByLocals',
+    brandName: targetBrandLabel,
     domain: cleanTarget,
     isTarget: true,
     isDirect: false,

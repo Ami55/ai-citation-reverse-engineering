@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ProjectState, PlatformType } from '../types';
 import { X, Plus, Layers, Target, Globe, HelpCircle } from 'lucide-react';
 
@@ -24,6 +24,19 @@ export const ProjectManagerModal: React.FC<ProjectManagerModalProps> = ({
   const [language, setLanguage] = useState(currentProject.language || 'en');
   const [targetUrls, setTargetUrls] = useState(currentProject.relevantTargetUrls?.join('\n') || '');
   const [competitorDomains, setCompetitorDomains] = useState(currentProject.competitorDomains?.join('\n') || '');
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setName(currentProject.name);
+    setTargetDomain(currentProject.targetDomain);
+    setSeedPrompt(currentProject.seedPrompt);
+    setSubject(currentProject.subject);
+    setAudience(currentProject.audience);
+    setCountry(currentProject.country || 'CA');
+    setLanguage(currentProject.language || 'en');
+    setTargetUrls(currentProject.relevantTargetUrls?.join('\n') || '');
+    setCompetitorDomains(currentProject.competitorDomains?.join('\n') || '');
+  }, [currentProject, isOpen]);
 
   if (!isOpen) return null;
 
@@ -92,7 +105,7 @@ export const ProjectManagerModal: React.FC<ProjectManagerModalProps> = ({
                 value={targetDomain}
                 onChange={(e) => setTargetDomain(e.target.value)}
                 className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg font-mono text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
-                placeholder="e.g. toursbylocals.com"
+                placeholder="e.g. your-domain.com"
               />
             </div>
 
@@ -162,7 +175,7 @@ export const ProjectManagerModal: React.FC<ProjectManagerModalProps> = ({
               value={targetUrls}
               onChange={(e) => setTargetUrls(e.target.value)}
               className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg font-mono text-slate-800 text-[11px]"
-              placeholder="https://www.toursbylocals.com/Rome-Tours"
+              placeholder="https://your-domain.com/rome-tours"
             />
           </div>
 

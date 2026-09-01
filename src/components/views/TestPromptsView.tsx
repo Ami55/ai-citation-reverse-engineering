@@ -441,7 +441,7 @@ export const TestPromptsView: React.FC<TestPromptsViewProps> = ({
               handleCreateVariation(
                 project.prompts[0] || { prompt: project.seedPrompt } as any,
                 'Head-to-Head Brand Comparison',
-                'Compare ToursByLocals, LivItaly and Walks of Italy for private family tours in Rome.'
+                'Compare the target brand with two leading competitors for private family tours in Rome.'
               )
             }
             className="p-3 bg-white hover:bg-slate-100 text-left border border-slate-200 rounded-lg text-xs transition-colors"
@@ -560,7 +560,7 @@ export const TestPromptsView: React.FC<TestPromptsViewProps> = ({
                   type="text"
                   value={formObjective}
                   onChange={(e) => setFormObjective(e.target.value)}
-                  placeholder="e.g. Ensure local guides on ToursByLocals are cited..."
+                  placeholder="e.g. Ensure the target brand's local experts are cited..."
                   className="w-full p-2 border border-slate-300 rounded-md"
                 />
               </div>

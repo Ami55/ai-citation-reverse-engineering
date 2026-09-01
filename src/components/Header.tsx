@@ -1,16 +1,18 @@
 import React from 'react';
 import { ProjectState } from '../types';
-import { Compass, Target, Globe, Layers, HelpCircle } from 'lucide-react';
+import { Compass, Target, Globe, Layers, HelpCircle, Plus } from 'lucide-react';
 
 interface HeaderProps {
   project: ProjectState;
   onOpenProjectManager: () => void;
+  onCreateNewResearch: () => void;
   onOpenHowItWorks?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   project,
   onOpenProjectManager,
+  onCreateNewResearch,
   onOpenHowItWorks,
 }) => {
   return (
@@ -32,6 +34,17 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
+            <button
+              onClick={onCreateNewResearch}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-md transition-colors shadow-xs"
+              title="Start a clean citation research project"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>New Research</span>
+            </button>
+
+            <div className="h-6 w-px bg-slate-700 mx-0.5 hidden sm:block"></div>
+
             {onOpenHowItWorks && (
               <>
                 <button
@@ -63,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="text-slate-400 block text-[10px] uppercase font-semibold tracking-wider">Target Domain</span>
               <div className="flex items-center gap-1 text-emerald-400 font-mono font-medium">
                 <Target className="w-3.5 h-3.5" />
-                <span>{project.targetDomain || 'toursbylocals.com'}</span>
+                <span>{project.targetDomain || 'your-domain.com'}</span>
               </div>
             </div>
 

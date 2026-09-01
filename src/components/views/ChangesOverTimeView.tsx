@@ -28,7 +28,7 @@ export const ChangesOverTimeView: React.FC<ChangesOverTimeViewProps> = ({ projec
       date: '2026-08-21 09:25',
       type: 'Live Diagnostic Run',
       platform: 'Gemini 3.6 Flash',
-      change: 'Observed ToursByLocals citation in direct intent head-to-head prompt cluster.',
+      change: `Observed ${project.targetDomain || 'target-domain'} citation in direct-intent head-to-head prompt cluster.`,
       impact: '+12% citation frequency',
       status: 'positive',
     },

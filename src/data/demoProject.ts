@@ -8,12 +8,12 @@ export const DEMO_PROJECT: ProjectState = {
   audience: 'First-time international leisure travellers seeking customizable local guide experiences',
   country: 'CA',
   language: 'en',
-  targetDomain: 'toursbylocals.com',
+  targetDomain: 'sample-brand.example',
   relevantTargetUrls: [
-    'https://www.toursbylocals.com/Rome-Tours',
-    'https://www.toursbylocals.com/Vatican-Private-Tours',
-    'https://www.toursbylocals.com/Colosseum-Private-Guides-Rome',
-    'https://www.toursbylocals.com/Rome-Food-Tours-With-Locals',
+    'https://www.sample-brand.example/Rome-Tours',
+    'https://www.sample-brand.example/Vatican-Private-Tours',
+    'https://www.sample-brand.example/Colosseum-Private-Guides-Rome',
+    'https://www.sample-brand.example/Rome-Food-Tours-With-Locals',
   ],
   competitorDomains: [
     'viator.com',
@@ -28,7 +28,7 @@ export const DEMO_PROJECT: ProjectState = {
   runsPerPrompt: 5,
   testingDate: '2026-08-21',
   notes:
-    'Diagnostic citation run evaluating visibility for private tours available through ToursByLocals across AI search answer engines. Focuses on entity relationships between local guides, skip-the-line permits, and custom pacing.',
+    'Diagnostic citation run evaluating visibility for private tours available through sample-brand across AI search answer engines. Focuses on entity relationships between local guides, skip-the-line permits, and custom pacing.',
   isDemo: true,
   createdAt: '2026-08-20T10:00:00.000Z',
   updatedAt: '2026-08-21T12:00:00.000Z',
@@ -46,7 +46,7 @@ export const DEMO_PROJECT: ProjectState = {
       country: 'CA',
       language: 'en',
       businessPriority: 'High',
-      businessObjective: 'Increase citation of local guides on ToursByLocals in AI itinerary recommendations',
+      businessObjective: 'Increase citation of local guides on sample-brand in AI itinerary recommendations',
       reasonForTesting: 'Determine why aggregator marketplaces appear ahead of direct local guide platforms',
       platforms: ['gemini', 'openai', 'claude'],
       runsRequested: 5,
@@ -67,7 +67,7 @@ export const DEMO_PROJECT: ProjectState = {
       country: 'CA',
       language: 'en',
       businessPriority: 'High',
-      businessObjective: 'Ensure tours on ToursByLocals are cited for customized itinerary pacing',
+      businessObjective: 'Ensure tours on sample-brand are cited for customized itinerary pacing',
       reasonForTesting: 'Assess whether AI engines cite editorial guidebooks vs local booking platforms',
       platforms: ['gemini', 'openai', 'claude'],
       runsRequested: 5,
@@ -77,7 +77,7 @@ export const DEMO_PROJECT: ProjectState = {
     },
     {
       id: 'prompt-3',
-      prompt: 'Compare LivItaly, Walks of Italy, Viator and ToursByLocals for custom private tours in Rome.',
+      prompt: 'Compare LivItaly, Walks of Italy, Viator and sample-brand for custom private tours in Rome.',
       seedPrompt: 'best private tour guides in Rome for first-time visitors who want to avoid crowds',
       variationType: 'Direct Brand Head-to-Head',
       queryCluster: 'Brand Comparison',
@@ -109,7 +109,7 @@ export const DEMO_PROJECT: ProjectState = {
       country: 'CA',
       language: 'en',
       businessPriority: 'High',
-      businessObjective: 'Showcase licensed guides on ToursByLocals who hold archaeology degrees',
+      businessObjective: 'Showcase licensed guides on sample-brand who hold archaeology degrees',
       reasonForTesting: 'Understand entity parsing of official Italian tour guide licensing in AI search',
       platforms: ['gemini', 'openai', 'claude'],
       runsRequested: 5,
@@ -135,7 +135,7 @@ export const DEMO_PROJECT: ProjectState = {
       searchQueries: [
         'best private tour guides Rome avoid crowds 2026',
         'top rated private guide services Rome Colosseum Vatican',
-        'LivItaly vs ToursByLocals Rome private tour reviews',
+        'LivItaly vs sample-brand Rome private tour reviews',
       ],
       retrievedSources: [
         {
@@ -154,9 +154,9 @@ export const DEMO_PROJECT: ProjectState = {
         },
         {
           id: 'chunk-2',
-          url: 'https://www.toursbylocals.com/Rome-Tours',
-          domain: 'toursbylocals.com',
-          title: 'Rome Tours with Local Private Guides | ToursByLocals',
+          url: 'https://www.sample-brand.example/Rome-Tours',
+          domain: 'sample-brand.example',
+          title: 'Rome Tours with Local Private Guides | sample-brand',
           snippet: 'Meet accredited local guides in Rome. 100% customizable private itineraries, flexible schedules, and verified traveler reviews.',
         },
         {
@@ -190,12 +190,12 @@ export const DEMO_PROJECT: ProjectState = {
         },
         {
           id: 'chunk-2',
-          url: 'https://www.toursbylocals.com/Rome-Tours',
-          domain: 'toursbylocals.com',
-          title: 'Rome Tours with Local Private Guides | ToursByLocals',
-          citedText: 'ToursByLocals connects travelers directly with vetted, licensed local guides who create bespoke walking routes.',
+          url: 'https://www.sample-brand.example/Rome-Tours',
+          domain: 'sample-brand.example',
+          title: 'Rome Tours with Local Private Guides | sample-brand',
+          citedText: 'sample-brand connects travelers directly with vetted, licensed local guides who create bespoke walking routes.',
           supportedClaims: [
-            'If you prefer directly choosing your guide and designing a fully custom itinerary at your own pace, private tours available through ToursByLocals connect you with licensed local guides.',
+            'If you prefer directly choosing your guide and designing a fully custom itinerary at your own pace, private tours available through sample-brand connect you with licensed local guides.',
           ],
         },
       ],
@@ -221,13 +221,13 @@ export const DEMO_PROJECT: ProjectState = {
           recommended: true,
         },
         {
-          brandName: 'ToursByLocals',
-          domain: 'toursbylocals.com',
+          brandName: 'sample-brand',
+          domain: 'sample-brand.example',
           isTargetBrand: true,
           isDirectCompetitor: false,
           isIndirectCompetitor: false,
           positionInAnswer: 310,
-          contextClaim: 'Private tours available through ToursByLocals connect you directly with licensed local guides for customized itineraries.',
+          contextClaim: 'Private tours available through sample-brand connect you directly with licensed local guides for customized itineraries.',
           recommended: true,
         },
         {
@@ -242,7 +242,7 @@ export const DEMO_PROJECT: ProjectState = {
         },
       ],
       answerText:
-        'When visiting Rome for the first time, hiring a dedicated private guide is the most effective way to navigate crowded monuments such as the Colosseum and Vatican Museums while tailoring the pace to your interests.\n\nHere are the top recommended services based on verified traveler feedback and specialist access:\n\n1. **Walks of Italy**: Ideal for VIP early-access entries. Their guides hold fast-track permissions that let you enter monuments before peak crowds gather.\n2. **LivItaly Tours**: Highly rated for families and history enthusiasts. Experiences are led by master-degree guides and archaeologists who adapt the narrative.\n3. **ToursByLocals**: The best option if you want to inspect individual guide profiles beforehand. Private tours available through ToursByLocals link you with licensed local guides who offer fully bespoke routes away from tourist traps.\n4. **Aggregators (Viator / GetYourGuide)**: While Viator offers an extensive catalogue, tours are operated by third-party suppliers, meaning guide consistency cannot always be verified in advance.',
+        'When visiting Rome for the first time, hiring a dedicated private guide is the most effective way to navigate crowded monuments such as the Colosseum and Vatican Museums while tailoring the pace to your interests.\n\nHere are the top recommended services based on verified traveler feedback and specialist access:\n\n1. **Walks of Italy**: Ideal for VIP early-access entries. Their guides hold fast-track permissions that let you enter monuments before peak crowds gather.\n2. **LivItaly Tours**: Highly rated for families and history enthusiasts. Experiences are led by master-degree guides and archaeologists who adapt the narrative.\n3. **sample-brand**: The best option if you want to inspect individual guide profiles beforehand. Private tours available through sample-brand link you with licensed local guides who offer fully bespoke routes away from tourist traps.\n4. **Aggregators (Viator / GetYourGuide)**: While Viator offers an extensive catalogue, tours are operated by third-party suppliers, meaning guide consistency cannot always be verified in advance.',
       rawApiData: {
         model: 'gemini-3.6-flash',
         finishReason: 'STOP',
@@ -364,9 +364,9 @@ export const DEMO_PROJECT: ProjectState = {
           title: 'LivItaly Rome Private Tours',
         },
         {
-          url: 'https://www.toursbylocals.com/Rome-Tours',
-          domain: 'toursbylocals.com',
-          title: 'Rome Tours with Local Private Guides | ToursByLocals',
+          url: 'https://www.sample-brand.example/Rome-Tours',
+          domain: 'sample-brand.example',
+          title: 'Rome Tours with Local Private Guides | sample-brand',
         },
       ],
       citedSources: [
@@ -378,11 +378,11 @@ export const DEMO_PROJECT: ProjectState = {
           supportedClaims: ['LivItaly provides tailored itineraries with dedicated licensed guides.'],
         },
         {
-          url: 'https://www.toursbylocals.com/Rome-Tours',
-          domain: 'toursbylocals.com',
-          title: 'Rome Tours with Local Private Guides | ToursByLocals',
-          citedText: 'ToursByLocals allows direct booking with licensed guides in Rome with flexible start times.',
-          supportedClaims: ['Guides on ToursByLocals offer customizable private tours with flexible start times.'],
+          url: 'https://www.sample-brand.example/Rome-Tours',
+          domain: 'sample-brand.example',
+          title: 'Rome Tours with Local Private Guides | sample-brand',
+          citedText: 'sample-brand allows direct booking with licensed guides in Rome with flexible start times.',
+          supportedClaims: ['Guides on sample-brand offer customizable private tours with flexible start times.'],
         },
       ],
       mentionedBrands: [
@@ -397,18 +397,18 @@ export const DEMO_PROJECT: ProjectState = {
           recommended: true,
         },
         {
-          brandName: 'ToursByLocals',
-          domain: 'toursbylocals.com',
+          brandName: 'sample-brand',
+          domain: 'sample-brand.example',
           isTargetBrand: true,
           isDirectCompetitor: false,
           isIndirectCompetitor: false,
           positionInAnswer: 190,
-          contextClaim: 'Guides on ToursByLocals offer customizable private tours with flexible start times.',
+          contextClaim: 'Guides on sample-brand offer customizable private tours with flexible start times.',
           recommended: true,
         },
       ],
       answerText:
-        'For first-time visitors seeking to bypass the busiest hours in Rome, working with accredited local guides provides significant advantages:\n\n1. **LivItaly Tours**: Offers premium private itineraries with specialized focus on ancient Roman history and kid-friendly storytelling.\n2. **ToursByLocals**: Allows you to read biographies and reviews of independent local guides. Local guide experiences can be scheduled at early morning or evening hours to avoid intense midday heat and tourist congestion.\n3. **Key Tip for Avoiding Crowds**: Ensure your guide has pre-reserved official monument entry tickets with specific time slots.',
+        'For first-time visitors seeking to bypass the busiest hours in Rome, working with accredited local guides provides significant advantages:\n\n1. **LivItaly Tours**: Offers premium private itineraries with specialized focus on ancient Roman history and kid-friendly storytelling.\n2. **sample-brand**: Allows you to read biographies and reviews of independent local guides. Local guide experiences can be scheduled at early morning or evening hours to avoid intense midday heat and tourist congestion.\n3. **Key Tip for Avoiding Crowds**: Ensure your guide has pre-reserved official monument entry tickets with specific time slots.',
       rawApiData: {
         model: 'claude-3-7-sonnet-20250219',
         toolsUsed: ['web_search_20250101'],
@@ -485,7 +485,7 @@ export const DEMO_PROJECT: ProjectState = {
     {
       id: 'run-gem-p3-1',
       promptId: 'prompt-3',
-      promptText: 'Compare LivItaly, Walks of Italy, Viator and ToursByLocals for custom private tours in Rome.',
+      promptText: 'Compare LivItaly, Walks of Italy, Viator and sample-brand for custom private tours in Rome.',
       promptVariation: 'Direct Brand Head-to-Head',
       platform: 'gemini',
       model: 'gemini-3.6-flash',
@@ -495,14 +495,14 @@ export const DEMO_PROJECT: ProjectState = {
       country: 'CA',
       language: 'en',
       searchQueries: [
-        'LivItaly vs Walks of Italy vs ToursByLocals vs Viator Rome private tours',
-        'ToursByLocals Rome custom tour reviews',
+        'LivItaly vs Walks of Italy vs sample-brand vs Viator Rome private tours',
+        'sample-brand Rome custom tour reviews',
       ],
       retrievedSources: [
         {
-          url: 'https://www.toursbylocals.com/Rome-Tours',
-          domain: 'toursbylocals.com',
-          title: 'Rome Tours with Local Private Guides | ToursByLocals',
+          url: 'https://www.sample-brand.example/Rome-Tours',
+          domain: 'sample-brand.example',
+          title: 'Rome Tours with Local Private Guides | sample-brand',
         },
         {
           url: 'https://www.walksofitaly.com/rome-tours/',
@@ -517,11 +517,11 @@ export const DEMO_PROJECT: ProjectState = {
       ],
       citedSources: [
         {
-          url: 'https://www.toursbylocals.com/Rome-Tours',
-          domain: 'toursbylocals.com',
-          title: 'Rome Tours with Local Private Guides | ToursByLocals',
-          citedText: 'ToursByLocals functions as a direct peer marketplace where guests message licensed guides to customize routes.',
-          supportedClaims: ['Tours on ToursByLocals offer unmatched customizability because travelers communicate directly with their chosen local guide.'],
+          url: 'https://www.sample-brand.example/Rome-Tours',
+          domain: 'sample-brand.example',
+          title: 'Rome Tours with Local Private Guides | sample-brand',
+          citedText: 'sample-brand functions as a direct peer marketplace where guests message licensed guides to customize routes.',
+          supportedClaims: ['Tours on sample-brand offer unmatched customizability because travelers communicate directly with their chosen local guide.'],
         },
         {
           url: 'https://www.walksofitaly.com/rome-tours/',
@@ -533,13 +533,13 @@ export const DEMO_PROJECT: ProjectState = {
       ],
       mentionedBrands: [
         {
-          brandName: 'ToursByLocals',
-          domain: 'toursbylocals.com',
+          brandName: 'sample-brand',
+          domain: 'sample-brand.example',
           isTargetBrand: true,
           isDirectCompetitor: false,
           isIndirectCompetitor: false,
           positionInAnswer: 45,
-          contextClaim: 'Tours on ToursByLocals offer unmatched customizability because travelers communicate directly with their chosen local guide.',
+          contextClaim: 'Tours on sample-brand offer unmatched customizability because travelers communicate directly with their chosen local guide.',
           recommended: true,
         },
         {
@@ -574,7 +574,7 @@ export const DEMO_PROJECT: ProjectState = {
         },
       ],
       answerText:
-        'Comparison of Rome Private Tour Providers:\n\n• **ToursByLocals**: Best for true customizability. Tours on ToursByLocals connect you directly with vetted local guides. You can customize the route, adjust pacing, and chat with your guide prior to booking.\n• **Walks of Italy**: Best for turnkey VIP experiences with exclusive early access to Vatican sites.\n• **LivItaly Tours**: Best for intimate family tours with interactive historical storytelling.\n• **Viator**: Best for broad inventory and price comparison, though quality depends on the specific third-party supplier.',
+        'Comparison of Rome Private Tour Providers:\n\n• **sample-brand**: Best for true customizability. Tours on sample-brand connect you directly with vetted local guides. You can customize the route, adjust pacing, and chat with your guide prior to booking.\n• **Walks of Italy**: Best for turnkey VIP experiences with exclusive early access to Vatican sites.\n• **LivItaly Tours**: Best for intimate family tours with interactive historical storytelling.\n• **Viator**: Best for broad inventory and price comparison, though quality depends on the specific third-party supplier.',
       rawApiData: {
         model: 'gemini-3.6-flash',
       },
@@ -583,7 +583,7 @@ export const DEMO_PROJECT: ProjectState = {
   experiments: [
     {
       id: 'exp-1',
-      pageUrl: 'https://www.toursbylocals.com/Rome-Tours',
+      pageUrl: 'https://www.sample-brand.example/Rome-Tours',
       proposedChange:
         'Add a structured Direct Answer section answering "How early should a private Vatican tour start to avoid queues?" and include explicit entity tags for licensed archaeologist guides.',
       evidence:
@@ -603,7 +603,7 @@ export const DEMO_PROJECT: ProjectState = {
     },
     {
       id: 'exp-2',
-      pageUrl: 'https://www.toursbylocals.com/Vatican-Private-Tours',
+      pageUrl: 'https://www.sample-brand.example/Vatican-Private-Tours',
       proposedChange:
         'Enhance author and expert attribution by featuring individual guide credentials (e.g., "Accredited Vatican City Guide & Art Historian with 12+ years experience") directly in schema markup and page headers.',
       evidence:
@@ -632,7 +632,7 @@ export const DEMO_PROJECT: ProjectState = {
       supportedClaim: 'Private guide bookings save up to 3 hours in ticket queues and navigate museum bottlenecks.',
       citedEvidence:
         'Walks of Italy published an editorial breakdown comparing exact wait times with vs without a private guide.',
-      closestTargetUrl: 'https://www.toursbylocals.com/Rome-Tours',
+      closestTargetUrl: 'https://www.sample-brand.example/Rome-Tours',
       targetPageCoverage:
         'Target page covers local guide listings and customizable itineraries, but lacks a comparative time/cost breakdown.',
       observedDifference:
@@ -656,7 +656,7 @@ export const DEMO_PROJECT: ProjectState = {
       supportedClaim: 'Withlocals provides culinary and neighbourhood strolls led by resident hosts.',
       citedEvidence:
         'Withlocals highlights neighbourhood themes (Trastevere, Monti) with quick bullet summaries on their category page.',
-      closestTargetUrl: 'https://www.toursbylocals.com/Rome-Food-Tours-With-Locals',
+      closestTargetUrl: 'https://www.sample-brand.example/Rome-Food-Tours-With-Locals',
       targetPageCoverage:
         'Target has culinary tours by local guides, but page metadata is not indexed for broad "avoid crowds" search intent.',
       observedDifference:
@@ -680,9 +680,9 @@ export const DEMO_PROJECT: ProjectState = {
       supportedClaim: 'LivItaly provides specialized tours led by accredited art historians and archaeologists.',
       citedEvidence:
         'LivItaly prominently features guide badges with academic credentials on their primary category header.',
-      closestTargetUrl: 'https://www.toursbylocals.com/Colosseum-Private-Guides-Rome',
+      closestTargetUrl: 'https://www.sample-brand.example/Colosseum-Private-Guides-Rome',
       targetPageCoverage:
-        'Guides on ToursByLocals hold official Italian tour guide licenses, but their academic degrees are buried inside individual bio modals rather than in the primary page HTML text.',
+        'Guides on sample-brand hold official Italian tour guide licenses, but their academic degrees are buried inside individual bio modals rather than in the primary page HTML text.',
       observedDifference:
         'Information is buried deep in sub-elements on target page, whereas competitor lists credentials in static header copy.',
       likelyCitationBarrier: 'Information buried on page',
@@ -700,11 +700,11 @@ export const DEMO_PROJECT: ProjectState = {
       id: 'comp-1',
       competitorDomain: 'walksofitaly.com',
       competitorUrl: 'https://www.walksofitaly.com/rome-tours/private-rome-tours/',
-      closestTargetUrl: 'https://www.toursbylocals.com/Rome-Tours',
+      closestTargetUrl: 'https://www.sample-brand.example/Rome-Tours',
       pageTypeCompetitor: 'Commercial Category Page with Editorial Modules',
       pageTypeTarget: 'Marketplace Directory & Listing Hub',
       titleCompetitor: 'Private Rome Tours & Vatican VIP Experiences | Walks of Italy',
-      titleTarget: 'Rome Tours with Local Private Guides | ToursByLocals',
+      titleTarget: 'Rome Tours with Local Private Guides | sample-brand',
       headingStructureCompetitor: [
         'H1: Private Rome Tours & VIP Experiences',
         'H2: Why Choose a Private Tour in Rome?',
@@ -734,7 +734,7 @@ export const DEMO_PROJECT: ProjectState = {
       ],
       questionsAnsweredTarget: [
         'How do I message my guide in advance?',
-        'Can tours on ToursByLocals be customized?',
+        'Can tours on sample-brand be customized?',
         'What languages do local guides speak?',
       ],
       contentDepth: 'High',
@@ -800,7 +800,7 @@ export const DEMO_PROJECT: ProjectState = {
         'Lack of schema.org/FAQPage on main category listing.',
       ],
       informationGainOpportunities: [
-        'Add a "Crowd Avoidance Guide" table created by local guides on ToursByLocals.',
+        'Add a "Crowd Avoidance Guide" table created by local guides on sample-brand.',
         'Surface guide archaeologist credentials in visible H3 tags.',
         'Implement FAQ schema answering first-time Rome visitor logistical questions.',
       ],
