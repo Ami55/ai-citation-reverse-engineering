@@ -92,25 +92,25 @@ export default function App() {
           const targetCited = run.citedSources.some((item) => item.domain.replace(/^www\./, '').includes(cleanTarget));
           if (targetCited) return [];
           const competitor = run.citedSources.find((item) => prev.competitorDomains.some((domain) => item.domain.includes(domain.replace(/^www\./, '')))) || run.citedSources[0];
-          if (!competitor) return [];
           const funnelStage = targetRetrieved ? 'Stage 3: Target page retrieved but not cited' as const : 'Stage 2: Target page not retrieved' as const;
+          const hasCitationEvidence = Boolean(competitor);
           return [{
             id: `opp-${run.id}`,
             triggeringPrompt: run.promptText,
             searchQuery: run.searchQueries[0] || run.promptText,
             platform: run.platform,
-            citedCompetitor: competitor.domain,
-            competitorUrl: competitor.url,
-            supportedClaim: competitor.supportedClaims?.[0] || competitor.title || 'Competitor page supported the generated answer.',
-            citedEvidence: competitor.citedText || competitor.snippet || 'The competitor URL was cited in this observed run.',
+            citedCompetitor: competitor?.domain || 'No cited source observed',
+            competitorUrl: competitor?.url || '',
+            supportedClaim: competitor?.supportedClaims?.[0] || competitor?.title || 'No source-supported claim was exposed by this run.',
+            citedEvidence: competitor?.citedText || competitor?.snippet || 'The run succeeded, but the provider exposed no retrieved or cited source evidence.',
             closestTargetUrl: prev.relevantTargetUrls[0] || `https://${prev.targetDomain}`,
             targetPageCoverage: targetRetrieved ? 'Target page was retrieved but not selected as a citation.' : 'Target page was not observed in retrieved sources.',
-            observedDifference: `${competitor.domain} was cited; ${prev.targetDomain} was ${targetRetrieved ? 'retrieved but not cited' : 'not retrieved'}.`,
-            likelyCitationBarrier: targetRetrieved ? 'The target page may lack a sufficiently direct, extractable answer or supporting evidence for this question.' : 'The target page may not align clearly enough with the query, or may lack retrievability and authority signals.',
-            recommendedExperiment: `On ${prev.relevantTargetUrls[0] || prev.targetDomain}, add a self-contained answer section for “${run.searchQueries[0] || run.promptText}” with specific facts, relevant entities, clear headings, and first-hand expertise. Keep the rest of the test conditions unchanged.`,
-            confidence: 'Medium' as const,
-            evidenceLabel: 'Likely Citation Factor' as const,
-            priority: 'High' as const,
+            observedDifference: hasCitationEvidence ? `${competitor.domain} was cited; ${prev.targetDomain} was ${targetRetrieved ? 'retrieved but not cited' : 'not retrieved'}.` : `The answer completed, but no source citations were exposed and ${prev.targetDomain} was not cited.`,
+            likelyCitationBarrier: hasCitationEvidence ? (targetRetrieved ? 'The target page may lack a sufficiently direct, extractable answer or supporting evidence for this question.' : 'The target page may not align clearly enough with the query, or may lack retrievability and authority signals.') : 'Unable to diagnose a page-level citation barrier without source evidence. The first action is to collect grounded runs with exposed citations.',
+            recommendedExperiment: hasCitationEvidence ? `On ${prev.relevantTargetUrls[0] || prev.targetDomain}, add a self-contained answer section for “${run.searchQueries[0] || run.promptText}” with specific facts, relevant entities, clear headings, and first-hand expertise. Keep the rest of the test conditions unchanged.` : 'Do not change the website from this run alone. Repeat the prompt 3–5 times with grounded search enabled, and add a more specific research prompt that requires current factual sources.',
+            confidence: hasCitationEvidence ? 'Medium' as const : 'Low' as const,
+            evidenceLabel: hasCitationEvidence ? 'Likely Citation Factor' as const : 'Unable to Determine' as const,
+            priority: hasCitationEvidence ? 'High' as const : 'Medium' as const,
             humanReviewStatus: 'Pending Review' as const,
             funnelStage,
           }];

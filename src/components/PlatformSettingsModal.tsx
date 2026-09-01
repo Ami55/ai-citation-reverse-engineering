@@ -147,6 +147,11 @@ export const PlatformSettingsModal: React.FC<PlatformSettingsModalProps> = ({
             <p className="text-xs text-slate-600">
               Enables testing with Claude web search tool calls, <code className="font-mono text-slate-800">web_search_tool_result</code>, and cited text passages.
             </p>
+            {status?.claude?.available && !status?.claude?.workspaceConfigured && (
+              <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-md p-2">
+                If your Anthropic key is identity-linked, add <code className="font-mono">ANTHROPIC_WORKSPACE_ID</code> in Vercel. Standard workspace API keys may not require it.
+              </p>
+            )}
             <div className="hidden">
               <label className="text-xs text-slate-500 block mb-1">Anthropic API Key:</label>
               <input

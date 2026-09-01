@@ -46,7 +46,7 @@ async function runGemini(payload) {
     model = candidateModel;
     response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: payload.prompt }] }], tools: [{ google_search: {} }] }),
+      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: `Use Google Search to research this question with current web sources. Answer clearly and ground factual claims in the sources you find. Question: ${payload.prompt}` }] }], tools: [{ google_search: {} }] }),
     });
     data = await response.json();
     if (response.ok) break;
@@ -67,7 +67,7 @@ async function runOpenAI(payload) {
   const model = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
   const response = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-    body: JSON.stringify({ model, input: payload.prompt, tools: [{ type: 'web_search_preview' }] }),
+    body: JSON.stringify({ model, input: `Search the web before answering. Use current sources and cite them. Question: ${payload.prompt}`, tools: [{ type: 'web_search_preview' }], tool_choice: 'required' }),
   });
   const data = await response.json();
   if (!response.ok) throw new Error(data?.error?.message || `OpenAI returned ${response.status}`);
@@ -81,14 +81,21 @@ async function runOpenAI(payload) {
 async function runClaude(payload) {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error('ANTHROPIC_API_KEY is not configured in Vercel.');
+  const workspaceId = process.env.ANTHROPIC_WORKSPACE_ID;
   const model = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+  const headers = { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' };
+  if (workspaceId) headers['anthropic-workspace-id'] = workspaceId;
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model, max_tokens: 2048, tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 5 }], messages: [{ role: 'user', content: payload.prompt }] }),
+    headers,
+    body: JSON.stringify({ model, max_tokens: 2048, tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 5 }], messages: [{ role: 'user', content: `Search the web before answering. Use current sources and cite them. Question: ${payload.prompt}` }] }),
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data?.error?.message || `Claude returned ${response.status}`);
+  if (!response.ok) {
+    const message = data?.error?.message || `Claude returned ${response.status}`;
+    if (message.includes('anthropic-workspace-id')) throw new Error(`${message} Add ANTHROPIC_WORKSPACE_ID to this Vercel project's Environment Variables, then redeploy.`);
+    throw new Error(message);
+  }
   const answerText = (data.content || []).filter((item) => item.type === 'text').map((item) => item.text || '').join('\n');
   const searchQueries = (data.content || []).filter((item) => item.type === 'server_tool_use').map((item) => item.input?.query).filter(Boolean);
   const results = (data.content || []).filter((item) => item.type === 'web_search_tool_result').flatMap((item) => Array.isArray(item.content) ? item.content : []);
@@ -107,7 +114,7 @@ export default async function handler(req, res) {
   if (req.body?.action === 'status') return json(res, 200, {
     gemini: { available: Boolean(process.env.GEMINI_API_KEY) },
     openai: { available: Boolean(process.env.OPENAI_API_KEY) },
-    claude: { available: Boolean(process.env.ANTHROPIC_API_KEY) },
+    claude: { available: Boolean(process.env.ANTHROPIC_API_KEY), workspaceConfigured: Boolean(process.env.ANTHROPIC_WORKSPACE_ID) },
   });
   if (req.body?.action !== 'execute') return json(res, 400, { error: 'Unsupported action' });
   try {

@@ -1,184 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ProjectState } from '../../types';
-import { EvidenceBadge } from '../EvidenceBadge';
 import { ResearchStepGuide } from '../ResearchStepGuide';
-import {
-  TrendingUp,
-  Calendar,
-  Layers,
-  ArrowUpRight,
-  ArrowDownRight,
-  ShieldCheck,
-  RotateCcw,
-  Sparkles,
-  GitCompare,
-  Clock,
-} from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Clock, TrendingUp } from 'lucide-react';
 
-interface ChangesOverTimeViewProps {
-  project: ProjectState;
-}
+interface ChangesOverTimeViewProps { project: ProjectState; }
 
 export const ChangesOverTimeView: React.FC<ChangesOverTimeViewProps> = ({ project }) => {
-  const [baselineDate, setBaselineDate] = useState('2026-08-20');
-  const [compareDate, setCompareDate] = useState('2026-08-21');
+  const successfulRuns = project.runs.filter((run) => run.status === 'success');
+  const citedRuns = successfulRuns.filter((run) => run.citedSources.length > 0);
+  const target = project.targetDomain.replace(/^www\./, '');
+  const targetCitedRuns = successfulRuns.filter((run) => run.citedSources.some((source) => source.domain.replace(/^www\./, '').includes(target)));
+  const mentionedRuns = successfulRuns.filter((run) => run.mentionedBrands.some((brand) => brand.isTargetBrand));
+  const citationRate = successfulRuns.length ? Math.round((targetCitedRuns.length / successfulRuns.length) * 100) : 0;
+  const mentionRate = successfulRuns.length ? Math.round((mentionedRuns.length / successfulRuns.length) * 100) : 0;
+  const hasExperiment = project.experiments.length > 0;
+  const hasComparison = project.experiments.some((experiment) => ['Validated', 'Inconclusive', 'Archived'].includes(experiment.status));
 
-  // Diagnostic timeline events
-  const timelineEvents = [
-    {
-      date: '2026-08-21 09:25',
-      type: 'Live Diagnostic Run',
-      platform: 'Gemini 3.6 Flash',
-      change: `Observed ${project.targetDomain || 'target-domain'} citation in direct-intent head-to-head prompt cluster.`,
-      impact: '+12% citation frequency',
-      status: 'positive',
-    },
-    {
-      date: '2026-08-21 09:18',
-      type: 'Query Fan-out Shift',
-      platform: 'OpenAI GPT-4o',
-      change: 'Model search fan-out expanded from 2 to 4 queries, prioritizing local guide reviews.',
-      impact: 'Added query: "licensed private guide vs agency"',
-      status: 'neutral',
-    },
-    {
-      date: '2026-08-20 16:40',
-      type: 'Competitor Citation Rise',
-      platform: 'Claude 3.7 Sonnet',
-      change: 'LivItaly cited for art-historian credential tags on Vatican queries.',
-      impact: 'Competitor citation frequency +20%',
-      status: 'negative',
-    },
-    {
-      date: '2026-08-20 10:00',
-      type: 'Baseline Project Initialized',
-      platform: 'Cross-platform',
-      change: 'Initial 15 test runs completed across 3 models.',
-      impact: 'Baseline target domain citation: 40%',
-      status: 'neutral',
-    },
-  ];
+  return <div className="space-y-6">
+    <ResearchStepGuide
+      step="Step 4"
+      title="Retest the same prompts and report the change"
+      purpose="Measure whether the implemented page change improved retrieval, citation, brand mention, or recommendation frequency without changing the test questions."
+      inputs={[`${project.runs.length} recorded runs`, `${project.experiments.length} documented experiments`, 'The unchanged baseline prompts and platforms']}
+      actions={['Create and implement an experiment in Step 3.', 'Wait until the changed page can be recrawled.', 'Run the same prompts, platforms, and run count.', 'Compare baseline and post-change rates.', 'Mark the experiment Validated, Inconclusive, or Archived.']}
+      output="A before-and-after result showing whether AI visibility improved, declined, or remained inconclusive."
+      interpretation="A repeated improvement across identical tests is evidence. A single changed answer is noise."
+      doneWhen="the experiment has a documented result and a decision: keep, revise, or replace the change."
+    />
 
-  return (
-    <div className="space-y-6">
-      <ResearchStepGuide
-        step="Step 4"
-        title="Retest the same prompts and report the change"
-        purpose="Measure whether the implemented page change improved retrieval, citation, brand mention, or recommendation frequency without changing the test questions."
-        inputs={[`${project.runs.length} recorded runs`, `${project.experiments.length} documented experiments`, 'The unchanged baseline prompts and platforms']}
-        actions={['Wait until the changed page can be recrawled.', 'Run the same prompts, platforms, and run count.', 'Compare baseline and post-change rates.', 'Mark the experiment Validated, Inconclusive, or Archived.', 'Share evidence and limitations—not only the headline percentage.']}
-        output="A before-and-after research result showing whether AI visibility improved, declined, or remained inconclusive."
-        interpretation="A repeated improvement across identical tests is useful evidence. A single changed answer is noise; continue monitoring before claiming success."
-        doneWhen="the experiment has a documented result and a decision: keep the change, revise it, or test a new hypothesis."
-      />
-      {/* Header Info */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-base font-bold text-slate-900">
-              Changes Over Time & Citation Volatility Tracking
-            </h2>
-          </div>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Monitor model prompt drift, newly extracted search queries, and citation stability deltas.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 text-xs">
-          <EvidenceBadge label="Cross-run Pattern" size="sm" />
-        </div>
+    <section className="rounded-xl border border-slate-200 bg-white p-5">
+      <div className="flex items-center gap-2"><TrendingUp className="w-5 h-5 text-indigo-600" /><h2 className="font-bold text-slate-900">Current measurement status</h2></div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+        {[['Successful baseline runs', successfulRuns.length], ['Runs exposing citations', citedRuns.length], ['Target citation rate', `${citationRate}%`], ['Target mention rate', `${mentionRate}%`]].map(([label, value]) => <div key={label} className="rounded-lg bg-slate-50 border border-slate-200 p-4"><span className="text-[10px] uppercase tracking-wide text-slate-500">{label}</span><strong className="block text-2xl text-slate-900 mt-1">{value}</strong></div>)}
       </div>
+    </section>
 
-      {/* Metric comparison cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
-          <span className="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">
-            Target Domain Stability
-          </span>
-          <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-2xl font-bold text-slate-900">78.5%</span>
-            <span className="text-xs font-semibold text-emerald-600 flex items-center">
-              <ArrowUpRight className="w-3.5 h-3.5" /> +4.2%
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Consistency of target page citation across repeated runs of identical prompt seeds.
-          </p>
-        </div>
-
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
-          <span className="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">
-            Query Drift Volatility
-          </span>
-          <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-2xl font-bold text-slate-900">Low (0.18)</span>
-            <span className="text-xs font-semibold text-slate-500">Stable</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Variability in search queries generated by AI search tools when repeating prompts.
-          </p>
-        </div>
-
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
-          <span className="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">
-            Active Experiments in Tracking
-          </span>
-          <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-2xl font-bold text-indigo-600">
-              {project.experiments?.length || 2}
-            </span>
-            <span className="text-xs text-slate-500">Targeting 2 pages</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Scheduled re-tests to measure whether content updates improved citation likelihood.
-          </p>
-        </div>
-      </div>
-
-      {/* Timeline Audit Log */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-indigo-600" />
-          Observable Diagnostic Timeline
-        </h3>
-
-        <div className="space-y-4">
-          {timelineEvents.map((evt, idx) => (
-            <div
-              key={idx}
-              className="flex items-start gap-3.5 pb-4 border-b border-slate-100 last:border-0 last:pb-0"
-            >
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
-                  evt.status === 'positive'
-                    ? 'bg-emerald-100 text-emerald-700'
-                    : evt.status === 'negative'
-                    ? 'bg-rose-100 text-rose-700'
-                    : 'bg-slate-100 text-slate-700'
-                }`}
-              >
-                {evt.status === 'positive' ? '✓' : evt.status === 'negative' ? '!' : '•'}
-              </div>
-
-              <div className="flex-1 text-xs">
-                <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900">{evt.type}</span>
-                    <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">
-                      {evt.platform}
-                    </span>
-                  </div>
-                  <span className="text-slate-400 font-mono text-[11px]">{evt.date}</span>
-                </div>
-
-                <p className="text-slate-700 leading-relaxed">{evt.change}</p>
-                <div className="mt-1 font-medium text-[11px] text-indigo-600">{evt.impact}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+    {!hasExperiment ? <section className="rounded-xl border-2 border-amber-200 bg-amber-50 p-5 flex gap-3"><AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" /><div><h3 className="font-bold text-amber-950">No comparison is available yet</h3><p className="text-sm text-amber-900 mt-1">These runs are your baseline. Go to <strong>3. Fix Citation Gaps</strong>, create one experiment, implement the website change, and then rerun the same prompts. Measurement requires both a before and an after.</p></div></section>
+    : !hasComparison ? <section className="rounded-xl border-2 border-sky-200 bg-sky-50 p-5 flex gap-3"><Clock className="w-5 h-5 text-sky-600 shrink-0" /><div><h3 className="font-bold text-sky-950">Experiment created; post-change evidence is still needed</h3><p className="text-sm text-sky-900 mt-1">After the page change is live and crawlable, repeat the baseline prompts and record the experiment result.</p></div></section>
+    : <section className="rounded-xl border-2 border-emerald-200 bg-emerald-50 p-5 flex gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" /><div><h3 className="font-bold text-emerald-950">A completed experiment is available</h3><p className="text-sm text-emerald-900 mt-1">Review the documented experiment result alongside the baseline rates above before reporting the outcome.</p></div></section>}
+  </div>;
 };
