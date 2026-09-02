@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ProjectState, TestRunItem, PlatformType } from '../../types';
 import { EvidenceBadge } from '../EvidenceBadge';
 import { AI_CITATION_PROXY_URL } from '../../config';
@@ -49,6 +49,11 @@ export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
   const runs = project.runs || [];
   const failedRunCount = runs.filter((run) => run.status === 'failed').length;
 
+  useEffect(() => {
+    const selectionStillExists = project.prompts.some((prompt) => prompt.id === selectedPromptId);
+    if (!selectionStillExists) setSelectedPromptId(project.prompts[0]?.id || '');
+  }, [project.prompts, selectedPromptId]);
+
   const handleTogglePlatform = (p: PlatformType) => {
     if (selectedPlatforms.includes(p)) {
       if (selectedPlatforms.length > 1) {
@@ -60,7 +65,8 @@ export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
   };
 
   const handleExecute = async () => {
-    const promptItem = project.prompts.find((p) => p.id === selectedPromptId);
+    const effectivePromptId = selectedPromptId || project.prompts[0]?.id || '';
+    const promptItem = project.prompts.find((p) => p.id === effectivePromptId);
     if (!promptItem) {
       alert('Please select a valid test prompt first.');
       return;
@@ -283,9 +289,9 @@ export const LiveTestRunsView: React.FC<LiveTestRunsViewProps> = ({
           </div>
           <button
             onClick={handleExecute}
-            disabled={isExecuting}
+            disabled={isExecuting || project.prompts.length === 0}
             className={`px-5 py-2 rounded-lg text-xs font-semibold text-white transition-colors flex items-center gap-2 shadow-xs ${
-              isExecuting ? 'bg-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-slate-800'
+              isExecuting || project.prompts.length === 0 ? 'bg-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-slate-800'
             }`}
           >
             <Play className={`w-3.5 h-3.5 ${isExecuting ? 'animate-spin' : ''}`} />
