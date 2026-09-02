@@ -302,6 +302,23 @@ export interface ChangesOverTimeComparison {
   evidenceLabel: EvidenceLabel;
 }
 
+export interface ImplementationAnalysis {
+  generatedAt: string;
+  answerInsights: string[];
+  sourceSimilarities: { pattern: string; evidence: string; implication: string }[];
+  targetGaps: { targetUrl: string; gap: string; comparedWith: string; impact: string }[];
+  implementationPlan: {
+    priority: 'High' | 'Medium' | 'Low';
+    targetUrl: string;
+    change: string;
+    example: string;
+    why: string;
+    successMetric: string;
+  }[];
+  limitations: string[];
+  pagesAnalyzed: { url: string; type: 'source' | 'target'; fetched: boolean }[];
+}
+
 export interface ProjectState {
   id: string;
   name: string;
@@ -323,6 +340,7 @@ export interface ProjectState {
   experiments: RecommendedExperimentItem[];
   opportunities: CitationOpportunityItem[];
   competitorComparisons: CompetitorComparisonReport[];
+  implementationAnalysis?: ImplementationAnalysis;
   createdAt: string;
   updatedAt: string;
 }

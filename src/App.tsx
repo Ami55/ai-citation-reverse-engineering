@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ProjectState, PromptItem, TestRunItem, RecommendedExperimentItem, CitationOpportunityItem } from './types';
+import { ProjectState, PromptItem, TestRunItem, RecommendedExperimentItem, CitationOpportunityItem, ImplementationAnalysis } from './types';
 import { DEMO_PROJECT } from './data/demoProject';
 import { Header } from './components/Header';
 import { Navigation, ActiveTab } from './components/Navigation';
@@ -150,6 +150,10 @@ export default function App() {
     }));
   };
 
+  const handleUpdateImplementationAnalysis = (implementationAnalysis: ImplementationAnalysis) => {
+    setProject((prev) => ({ ...prev, implementationAnalysis, updatedAt: new Date().toISOString() }));
+  };
+
   const handleSelectProject = (newProj: ProjectState) => {
     setProject(newProj);
     // Ensure it is in savedProjects
@@ -281,7 +285,7 @@ export default function App() {
           </section>
           <details id="workspace-step-1" open={project.prompts.length === 0} className="scroll-mt-24 rounded-xl border border-sky-200 bg-white overflow-hidden"><summary className="cursor-pointer list-none p-5 flex items-center justify-between"><div><span className="text-xs font-bold text-sky-700">STEP 1</span><h2 className="font-bold text-slate-900">Choose the customer questions</h2><p className="text-xs text-slate-500 mt-1">{project.prompts.length ? `Done: ${project.prompts.length} test ${project.prompts.length === 1 ? 'question is' : 'questions are'} ready.` : 'Add 5–10 questions people would genuinely ask an AI assistant.'}</p></div><span className="text-sm font-bold text-slate-400">{project.prompts.length ? '✓ Edit' : 'Open'}</span></summary><div className="border-t border-slate-200 p-5"><TestPromptsView project={project} onUpdatePrompts={handleUpdatePrompts} onExecutePrompt={() => navigateWorkspace('runs')} /></div></details>
           <details id="workspace-step-2" open={project.prompts.length > 0 && successfulRuns.length === 0} className="scroll-mt-24 rounded-xl border border-indigo-200 bg-white overflow-hidden"><summary className="cursor-pointer list-none p-5 flex items-center justify-between"><div><span className="text-xs font-bold text-indigo-700">STEP 2</span><h2 className="font-bold text-slate-900">Run the questions and collect evidence</h2><p className="text-xs text-slate-500 mt-1">{successfulRuns.length ? `Analysis: ${successfulRuns.length} successful runs found ${retrievedCount} retrieved sources, ${citedCount} citations and ${mentionCount} brand mentions.` : project.prompts.length ? 'Now run the questions. Use 3–5 runs for a reliable pattern.' : 'Complete Step 1 first.'}</p></div><span className="text-sm font-bold text-slate-400">{successfulRuns.length ? '✓ View' : 'Open'}</span></summary><div className="border-t border-slate-200 p-5"><LiveTestRunsView project={project} onAddRuns={handleAddRuns} onRemoveFailedRuns={handleRemoveFailedRuns} onOpenSettings={() => setIsSettingsOpen(true)} /></div></details>
-          <details id="workspace-step-3" open={successfulRuns.length > 0 && project.opportunities.length > 0 && activeExperimentCount === 0} className="scroll-mt-24 rounded-xl border border-amber-200 bg-white overflow-hidden"><summary className="cursor-pointer list-none p-5 flex items-center justify-between"><div><span className="text-xs font-bold text-amber-700">STEP 3</span><h2 className="font-bold text-slate-900">Use the analysis on the website</h2><p className="text-xs text-slate-500 mt-1">{project.opportunities.length ? `The app created ${project.opportunities.length} diagnosis. Open it, review the evidence, and approve one website experiment.` : successfulRuns.length ? 'There was not enough source evidence for a page-level recommendation. Repeat grounded tests before changing the site.' : 'Complete Step 2 first.'}</p></div><span className="text-sm font-bold text-slate-400">{activeExperimentCount ? '✓ Experiment active' : 'Open'}</span></summary><div className="border-t border-slate-200 p-5"><CitationOpportunitiesView project={project} onUpdateExperiments={handleUpdateExperiments} onUpdateOpportunities={handleUpdateOpportunities} /></div></details>
+          <details id="workspace-step-3" open={successfulRuns.length > 0 && activeExperimentCount === 0} className="scroll-mt-24 rounded-xl border border-amber-200 bg-white overflow-hidden"><summary className="cursor-pointer list-none p-5 flex items-center justify-between"><div><span className="text-xs font-bold text-amber-700">STEP 3</span><h2 className="font-bold text-slate-900">Analyze the text and use it on the website</h2><p className="text-xs text-slate-500 mt-1">{project.implementationAnalysis ? `${project.implementationAnalysis.implementationPlan.length} implementation actions are ready from answer and page analysis.` : successfulRuns.length ? 'Analyze the generated answers, sourced pages, and your target pages to create implementation actions.' : 'Complete Step 2 first.'}</p></div><span className="text-sm font-bold text-slate-400">{project.implementationAnalysis ? '✓ View actions' : 'Open'}</span></summary><div className="border-t border-slate-200 p-5"><CitationOpportunitiesView project={project} onUpdateExperiments={handleUpdateExperiments} onUpdateOpportunities={handleUpdateOpportunities} onUpdateImplementationAnalysis={handleUpdateImplementationAnalysis} /></div></details>
           <details id="workspace-step-4" open={activeExperimentCount > 0} className="scroll-mt-24 rounded-xl border border-emerald-200 bg-white overflow-hidden"><summary className="cursor-pointer list-none p-5 flex items-center justify-between"><div><span className="text-xs font-bold text-emerald-700">STEP 4</span><h2 className="font-bold text-slate-900">Retest and measure the change</h2><p className="text-xs text-slate-500 mt-1">{activeExperimentCount ? `${activeExperimentCount} experiment is active. After the site change is live, rerun the same questions and compare.` : 'This opens after you approve a website experiment in Step 3.'}</p></div><span className="text-sm font-bold text-slate-400">{activeExperimentCount ? 'Open' : 'Locked'}</span></summary><div className="border-t border-slate-200 p-5"><ChangesOverTimeView project={project} /></div></details>
         </div>}
 
@@ -323,6 +327,7 @@ export default function App() {
             project={project}
             onUpdateExperiments={handleUpdateExperiments}
             onUpdateOpportunities={handleUpdateOpportunities}
+            onUpdateImplementationAnalysis={handleUpdateImplementationAnalysis}
           />
         )}
 

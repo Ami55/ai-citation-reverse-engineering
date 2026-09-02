@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ProjectState, CitationOpportunityItem, RecommendedExperimentItem } from '../../types';
+import { ProjectState, CitationOpportunityItem, RecommendedExperimentItem, ImplementationAnalysis } from '../../types';
 import { EvidenceBadge } from '../EvidenceBadge';
+import { AI_CITATION_PROXY_URL } from '../../config';
 import {
   Sparkles,
   ExternalLink,
@@ -19,12 +20,14 @@ interface CitationOpportunitiesViewProps {
   project: ProjectState;
   onUpdateExperiments?: (experiments: RecommendedExperimentItem[]) => void;
   onUpdateOpportunities?: (opportunities: CitationOpportunityItem[]) => void;
+  onUpdateImplementationAnalysis?: (analysis: ImplementationAnalysis) => void;
 }
 
 export const CitationOpportunitiesView: React.FC<CitationOpportunitiesViewProps> = ({
   project,
   onUpdateExperiments,
   onUpdateOpportunities,
+  onUpdateImplementationAnalysis,
 }) => {
   const opportunities = project.opportunities || [];
   const experiments = project.experiments || [];
@@ -33,6 +36,24 @@ export const CitationOpportunitiesView: React.FC<CitationOpportunitiesViewProps>
   const [filterPriority, setFilterPriority] = useState<string>('All');
   const [filterStage, setFilterStage] = useState<string>('All');
   const [selectedOpp, setSelectedOpp] = useState<CitationOpportunityItem | null>(opportunities[0] || null);
+  const [isAnalyzingImplementation, setIsAnalyzingImplementation] = useState(false);
+  const [analysisError, setAnalysisError] = useState('');
+
+  const handleAnalyzeImplementation = async () => {
+    setIsAnalyzingImplementation(true);
+    setAnalysisError('');
+    try {
+      const runs = project.runs.filter((run) => run.status === 'success').map((run) => ({
+        status: run.status, platform: run.platform, promptText: run.promptText, answerText: run.answerText,
+        searchQueries: run.searchQueries, retrievedSources: run.retrievedSources, citedSources: run.citedSources,
+      }));
+      const response = await fetch(AI_CITATION_PROXY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'analyze-implementation', targetDomain: project.targetDomain, targetUrls: project.relevantTargetUrls, competitorDomains: project.competitorDomains, runs }) });
+      const data = await response.json();
+      if (!response.ok || data.status !== 'success') throw new Error(data.error || 'Implementation analysis failed.');
+      onUpdateImplementationAnalysis?.(data.analysis as ImplementationAnalysis);
+    } catch (error: any) { setAnalysisError(error.message || 'Implementation analysis failed.'); }
+    finally { setIsAnalyzingImplementation(false); }
+  };
 
   const filteredOpps = opportunities.filter((opp) => {
     const matchPriority = filterPriority === 'All' || opp.priority === filterPriority;
@@ -109,6 +130,20 @@ export const CitationOpportunitiesView: React.FC<CitationOpportunitiesViewProps>
           </button>
         </div>
       </div>
+
+      <section className="rounded-xl border-2 border-indigo-200 bg-white p-5 space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div><span className="text-[10px] font-bold uppercase tracking-widest text-indigo-700">Core analysis</span><h3 className="font-bold text-slate-900 mt-1">Analyze answers, source pages, and your pages</h3><p className="text-xs text-slate-500 mt-1">Find repeated source patterns and convert them into implementation tasks for the target URLs.</p></div>
+          <button onClick={handleAnalyzeImplementation} disabled={isAnalyzingImplementation || !project.runs.some((run) => run.status === 'success')} className="shrink-0 rounded-lg bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed">{isAnalyzingImplementation ? 'Analyzing pages…' : project.implementationAnalysis ? 'Refresh implementation analysis' : 'Analyze for implementation'}</button>
+        </div>
+        {analysisError && <p className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">{analysisError}</p>}
+        {project.implementationAnalysis && <div className="space-y-5 border-t border-slate-200 pt-4">
+          <div><h4 className="text-sm font-bold text-slate-900">What the AI answers value</h4><ul className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">{project.implementationAnalysis.answerInsights.map((item) => <li key={item} className="rounded-lg bg-slate-50 border border-slate-200 p-3 text-xs text-slate-700">{item}</li>)}</ul></div>
+          <div><h4 className="text-sm font-bold text-slate-900">Similarities across sourced pages</h4><div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">{project.implementationAnalysis.sourceSimilarities.map((item) => <div key={`${item.pattern}-${item.evidence}`} className="rounded-lg border border-sky-200 bg-sky-50 p-3 text-xs"><strong className="text-sky-950">{item.pattern}</strong><p className="text-slate-600 mt-1">Evidence: {item.evidence}</p><p className="text-sky-900 mt-1">Use: {item.implication}</p></div>)}</div></div>
+          <div><h4 className="text-sm font-bold text-slate-900">Implementation backlog</h4><div className="space-y-3 mt-2">{project.implementationAnalysis.implementationPlan.map((item, index) => <article key={`${item.targetUrl}-${index}`} className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 text-xs"><div className="flex items-center justify-between gap-2"><strong className="text-slate-900">{index + 1}. {item.change}</strong><span className={`rounded-full px-2 py-0.5 font-bold ${item.priority === 'High' ? 'bg-rose-100 text-rose-800' : item.priority === 'Medium' ? 'bg-amber-100 text-amber-800' : 'bg-slate-200 text-slate-700'}`}>{item.priority}</span></div><a href={item.targetUrl} target="_blank" rel="noreferrer" className="text-indigo-700 underline mt-1 block break-all">{item.targetUrl}</a><p className="text-slate-700 mt-2"><strong>Why:</strong> {item.why}</p><p className="rounded-lg bg-white border border-amber-200 p-3 mt-2 text-slate-700"><strong>Example:</strong> {item.example}</p><p className="text-emerald-800 mt-2"><strong>Measure:</strong> {item.successMetric}</p></article>)}</div></div>
+          <p className="text-[11px] text-slate-500">Pages successfully fetched: {project.implementationAnalysis.pagesAnalyzed.filter((page) => page.fetched).length}/{project.implementationAnalysis.pagesAnalyzed.length}. Recommendations remain hypotheses to validate with repeated tests.</p>
+        </div>}
+      </section>
 
       {activeTab === 'opportunities' ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
