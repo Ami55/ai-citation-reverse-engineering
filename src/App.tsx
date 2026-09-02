@@ -232,8 +232,18 @@ export default function App() {
       return;
     }
     setActiveTab('overview');
-    setTimeout(() => document.getElementById(sectionMap[tab])?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    setTimeout(() => {
+      const section = document.getElementById(sectionMap[tab]);
+      section?.setAttribute('open', '');
+      section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   };
+
+  const successfulRuns = project.runs.filter((run) => run.status === 'success');
+  const retrievedCount = successfulRuns.reduce((sum, run) => sum + run.retrievedSources.length, 0);
+  const citedCount = successfulRuns.reduce((sum, run) => sum + run.citedSources.length, 0);
+  const mentionCount = successfulRuns.reduce((sum, run) => sum + run.mentionedBrands.length, 0);
+  const activeExperimentCount = project.experiments.filter((experiment) => experiment.status === 'Active Testing').length;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased">
@@ -260,7 +270,8 @@ export default function App() {
 
       {/* Active Tab View Body */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
-        {activeTab === 'overview' && <div className="space-y-12" id="workspace-top">
+        {activeTab === 'overview' && <div className="space-y-5" id="workspace-top">
+          <section className="rounded-xl bg-slate-900 p-5 text-white"><h1 className="text-xl font-bold">AI Citation Research</h1><p className="text-sm text-slate-300 mt-1">We test a real customer question, see whether AI uses your website, then turn the result into one website action and retest it.</p></section>
           <section className="rounded-2xl border-2 border-indigo-200 bg-white p-6 shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div><span className="text-[10px] font-bold uppercase tracking-widest text-indigo-700">First: research inputs</span><h1 className="text-2xl font-bold text-slate-900 mt-1">{project.name}</h1><p className="text-sm text-slate-600 mt-1">Question: “{project.seedPrompt || 'Add the customer question you want to investigate'}”</p></div>
@@ -268,11 +279,10 @@ export default function App() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5 text-xs"><div className="rounded-lg bg-slate-50 p-3"><strong className="block text-slate-900">Target website</strong>{project.targetDomain || 'Not entered'}</div><div className="rounded-lg bg-slate-50 p-3"><strong className="block text-slate-900">Audience and market</strong>{project.audience || 'Not entered'} · {project.country}/{project.language}</div><div className="rounded-lg bg-slate-50 p-3"><strong className="block text-slate-900">Pages and competitors</strong>{project.relevantTargetUrls.length} target URLs · {project.competitorDomains.length} competitors</div></div>
           </section>
-          <OverviewView project={project} onNavigateTab={navigateWorkspace} onOpenHowItWorks={() => setIsHowItWorksOpen(true)} />
-          <section id="workspace-step-1" className="scroll-mt-24 border-t-4 border-sky-500 pt-8"><TestPromptsView project={project} onUpdatePrompts={handleUpdatePrompts} onExecutePrompt={() => navigateWorkspace('runs')} /></section>
-          <section id="workspace-step-2" className="scroll-mt-24 border-t-4 border-indigo-500 pt-8"><LiveTestRunsView project={project} onAddRuns={handleAddRuns} onRemoveFailedRuns={handleRemoveFailedRuns} onOpenSettings={() => setIsSettingsOpen(true)} /></section>
-          <section id="workspace-step-3" className="scroll-mt-24 border-t-4 border-amber-500 pt-8"><CitationOpportunitiesView project={project} onUpdateExperiments={handleUpdateExperiments} onUpdateOpportunities={handleUpdateOpportunities} /></section>
-          <section id="workspace-step-4" className="scroll-mt-24 border-t-4 border-emerald-500 pt-8"><ChangesOverTimeView project={project} /></section>
+          <details id="workspace-step-1" open={project.prompts.length === 0} className="scroll-mt-24 rounded-xl border border-sky-200 bg-white overflow-hidden"><summary className="cursor-pointer list-none p-5 flex items-center justify-between"><div><span className="text-xs font-bold text-sky-700">STEP 1</span><h2 className="font-bold text-slate-900">Choose the customer questions</h2><p className="text-xs text-slate-500 mt-1">{project.prompts.length ? `Done: ${project.prompts.length} test ${project.prompts.length === 1 ? 'question is' : 'questions are'} ready.` : 'Add 5–10 questions people would genuinely ask an AI assistant.'}</p></div><span className="text-sm font-bold text-slate-400">{project.prompts.length ? '✓ Edit' : 'Open'}</span></summary><div className="border-t border-slate-200 p-5"><TestPromptsView project={project} onUpdatePrompts={handleUpdatePrompts} onExecutePrompt={() => navigateWorkspace('runs')} /></div></details>
+          <details id="workspace-step-2" open={project.prompts.length > 0 && successfulRuns.length === 0} className="scroll-mt-24 rounded-xl border border-indigo-200 bg-white overflow-hidden"><summary className="cursor-pointer list-none p-5 flex items-center justify-between"><div><span className="text-xs font-bold text-indigo-700">STEP 2</span><h2 className="font-bold text-slate-900">Run the questions and collect evidence</h2><p className="text-xs text-slate-500 mt-1">{successfulRuns.length ? `Analysis: ${successfulRuns.length} successful runs found ${retrievedCount} retrieved sources, ${citedCount} citations and ${mentionCount} brand mentions.` : project.prompts.length ? 'Now run the questions. Use 3–5 runs for a reliable pattern.' : 'Complete Step 1 first.'}</p></div><span className="text-sm font-bold text-slate-400">{successfulRuns.length ? '✓ View' : 'Open'}</span></summary><div className="border-t border-slate-200 p-5"><LiveTestRunsView project={project} onAddRuns={handleAddRuns} onRemoveFailedRuns={handleRemoveFailedRuns} onOpenSettings={() => setIsSettingsOpen(true)} /></div></details>
+          <details id="workspace-step-3" open={successfulRuns.length > 0 && project.opportunities.length > 0 && activeExperimentCount === 0} className="scroll-mt-24 rounded-xl border border-amber-200 bg-white overflow-hidden"><summary className="cursor-pointer list-none p-5 flex items-center justify-between"><div><span className="text-xs font-bold text-amber-700">STEP 3</span><h2 className="font-bold text-slate-900">Use the analysis on the website</h2><p className="text-xs text-slate-500 mt-1">{project.opportunities.length ? `The app created ${project.opportunities.length} diagnosis. Open it, review the evidence, and approve one website experiment.` : successfulRuns.length ? 'There was not enough source evidence for a page-level recommendation. Repeat grounded tests before changing the site.' : 'Complete Step 2 first.'}</p></div><span className="text-sm font-bold text-slate-400">{activeExperimentCount ? '✓ Experiment active' : 'Open'}</span></summary><div className="border-t border-slate-200 p-5"><CitationOpportunitiesView project={project} onUpdateExperiments={handleUpdateExperiments} onUpdateOpportunities={handleUpdateOpportunities} /></div></details>
+          <details id="workspace-step-4" open={activeExperimentCount > 0} className="scroll-mt-24 rounded-xl border border-emerald-200 bg-white overflow-hidden"><summary className="cursor-pointer list-none p-5 flex items-center justify-between"><div><span className="text-xs font-bold text-emerald-700">STEP 4</span><h2 className="font-bold text-slate-900">Retest and measure the change</h2><p className="text-xs text-slate-500 mt-1">{activeExperimentCount ? `${activeExperimentCount} experiment is active. After the site change is live, rerun the same questions and compare.` : 'This opens after you approve a website experiment in Step 3.'}</p></div><span className="text-sm font-bold text-slate-400">{activeExperimentCount ? 'Open' : 'Locked'}</span></summary><div className="border-t border-slate-200 p-5"><ChangesOverTimeView project={project} /></div></details>
         </div>}
 
         {activeTab === 'prompts' && (

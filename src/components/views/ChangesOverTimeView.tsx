@@ -1,6 +1,5 @@
 import React from 'react';
 import { ProjectState } from '../../types';
-import { ResearchStepGuide } from '../ResearchStepGuide';
 import { AlertTriangle, CheckCircle2, Clock, TrendingUp } from 'lucide-react';
 
 interface ChangesOverTimeViewProps { project: ProjectState; }
@@ -17,16 +16,6 @@ export const ChangesOverTimeView: React.FC<ChangesOverTimeViewProps> = ({ projec
   const hasComparison = project.experiments.some((experiment) => ['Validated', 'Inconclusive', 'Archived'].includes(experiment.status));
 
   return <div className="space-y-6">
-    <ResearchStepGuide
-      step="Step 4"
-      title="Retest the same prompts and report the change"
-      purpose="Measure whether the implemented page change improved retrieval, citation, brand mention, or recommendation frequency without changing the test questions."
-      inputs={[`${project.runs.length} recorded runs`, `${project.experiments.length} documented experiments`, 'The unchanged baseline prompts and platforms']}
-      actions={['Create and implement an experiment in Step 3.', 'Wait until the changed page can be recrawled.', 'Run the same prompts, platforms, and run count.', 'Compare baseline and post-change rates.', 'Mark the experiment Validated, Inconclusive, or Archived.']}
-      output="A before-and-after result showing whether AI visibility improved, declined, or remained inconclusive."
-      interpretation="A repeated improvement across identical tests is evidence. A single changed answer is noise."
-      doneWhen="the experiment has a documented result and a decision: keep, revise, or replace the change."
-    />
 
     <section className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="flex items-center gap-2"><TrendingUp className="w-5 h-5 text-indigo-600" /><h2 className="font-bold text-slate-900">Current measurement status</h2></div>
